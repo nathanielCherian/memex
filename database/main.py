@@ -1,4 +1,7 @@
-import sqlite3
+from sqlalchemy import create_engine
 
-sqlite3.connect("test.db")
+
+engine = create_engine("sqlite://", echo=True, future=True)
+
+
 
