@@ -1,0 +1,25 @@
+from http.server import BaseHTTPRequestHandler, HTTPServer
+import json
+
+HOSTNAME = "localhost"
+PORT = 8080
+
+class Server(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.send_header("Content-type", "json")
+        self.end_headers()
+        self.wfile.write(bytes(json.dumps({'message':"hi!"}), encoding='utf8'))
+
+def start_server():
+    webserver = HTTPServer((HOSTNAME, PORT), Server)
+    try:
+        webserver.serve_forever()
+    except:
+        print("whoops")
+
+    return
+
+if __name__ == "__main__":
+    print("starting memex server...")
+    start_server()
