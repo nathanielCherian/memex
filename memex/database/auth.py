@@ -1,5 +1,5 @@
 from database.main import create_session
-from database.model import AuthModel
+from database.models import AuthModel
 
 def find_token(salt):
     try:
@@ -15,7 +15,7 @@ def get_all_tokens():
         session = create_session()
         return session.query(AuthModel).all()
     except Exception as e:
-        print("failed to get all tokens...", e)
+        print("failed to get tokens...", e)
     return []
 
 def add_auth_token(name, salt):

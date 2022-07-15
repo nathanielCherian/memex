@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
 from database.constants import DB_PATH
-from database.model import Base 
+from database.models import Base 
 
 
 def create_session():

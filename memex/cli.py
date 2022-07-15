@@ -1,7 +1,9 @@
 from database.auth import add_auth_token, get_all_tokens
+from database.entry import create_entry
 import argparse
 import uuid
 import hashlib
+
 
 parser = argparse.ArgumentParser(description='memex clis')
 parser.add_argument('command', metavar='command', type=str, nargs=1,
@@ -30,9 +32,12 @@ elif command == 'listtokens':
     tokenstrs = map(lambda token: f'{token.get_name()}', tokens)
     print('\n'.join(tokenstrs))
 
+elif command == 'store':
+    print(create_entry(url='sdf', keywords=['yo', 'tes,t']))
+
 else:
     print('command not recognized.')
     print('see help.')
 
 
-print(args)
+# print(args)
