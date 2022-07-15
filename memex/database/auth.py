@@ -1,6 +1,5 @@
-import sqlite3
-from main import create_session
-from model import AuthModel
+from database.main import create_session
+from database.model import AuthModel
 
 def find_token(salt):
     try:

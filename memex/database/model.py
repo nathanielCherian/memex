@@ -19,6 +19,9 @@ class AuthModel(Base):
     def __repr__(self):
         return f'<{self.__tablename__} id={self.id} name={self.name} salt={self.salt[:5]}>'
 
+    def get_name(self):
+        return self.name
+
 class EntryModel(Base):
     __tablename__ = "entries"
     id = Column(Integer, primary_key=True)
