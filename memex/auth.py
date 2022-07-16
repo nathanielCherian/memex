@@ -1,5 +1,5 @@
-from database.main import create_session
-from database.models import AuthModel
+from .main import create_session
+from .models import AuthModel
 
 def find_token(salt):
     try:

@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "memex"
+version = "0.1.0"
+description = "a personal libraries for all your memories"
+authors = ["Nathaniel Cherian <me@nathanielc.com>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/nathanielCherian/memex"
+repository = "https://github.com/nathanielCherian/memex"
+keywords = ["memex"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+SQLAlchemy = "^1.4.39"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+
+[tool.poetry.scripts]
+memex = "bin.cli:main"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

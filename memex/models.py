@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.sql import func
 from sqlalchemy.orm import declarative_base
 
-from database.errors import InvalidKeywordException
+from .errors import InvalidKeywordException
 
 Base = declarative_base()
 

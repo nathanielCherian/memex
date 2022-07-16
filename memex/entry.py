@@ -1,6 +1,6 @@
-from database.main import create_session
-from database.models import EntryModel
-from database.errors import InvalidKeywordException
+from .main import create_session
+from .models import EntryModel
+from .errors import InvalidKeywordException
 
 def create_entry(**kwargs):
     try:
