@@ -18,3 +18,10 @@ def save_entry(entry):
     except Exception as e:
         print("something went wrong")
         return False
+
+def list_entries():
+    try:
+        session = create_session()
+        return session.query(EntryModel).all()
+    except Exception as e:
+        print("something went wrong...", e)

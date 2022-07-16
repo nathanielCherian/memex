@@ -1,5 +1,5 @@
 from database.auth import add_auth_token, get_all_tokens
-from database.entry import create_entry
+from database.entry import create_entry, list_entries, save_entry
 import argparse
 import uuid
 import hashlib
@@ -32,8 +32,19 @@ elif command == 'listtokens':
     tokenstrs = map(lambda token: f'{token.get_name()}', tokens)
     print('\n'.join(tokenstrs))
 
-elif command == 'store':
-    print(create_entry(url='sdf', keywords=['yo', 'tes,t']))
+elif command == 'file':
+    url = sub_args[0] if len(sub_args) > 0 else input('URL of website to store: ')
+    keywords = sub_args[1:] if len(sub_args) > 1 else input('Enter keywords (comma seperated): ').split(',')
+    entry = create_entry(url=url, keywords=keywords)
+    status = save_entry(entry)
+    print("Saved entry successfully!") if status else print("Failed to save entry...")
+
+elif command == 'list':
+    entries = list_entries()
+    print(entries)
+
+elif command == 'set-remote':
+    raise Exception("not implemented yet.")
 
 else:
     print('command not recognized.')
