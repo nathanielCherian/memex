@@ -1,9 +1,7 @@
-import textwrap
-from memex.auth import add_auth_token, get_all_tokens
+from memex.auth import add_auth_token, gen_token, get_all_tokens
 from memex.entry import create_entry, list_entries, save_entry
-import argparse
-import uuid
-import hashlib
+from argparse import ArgumentParser, RawTextHelpFormatter
+
 
 def not_found(x):
     print('command not recognized.')
@@ -11,10 +9,8 @@ def not_found(x):
 
 def createtoken(sub_args):
     name = sub_args[0] if len(sub_args) > 0 else input('identifying name for token: ')
-    token = str(uuid.uuid4())
-    salt = hashlib.sha256(str.encode(token)).hexdigest()
-    status = add_auth_token(name, salt)
-    if status:
+    token = gen_token(name)
+    if token:
         print(f'Here is your token: {token}')
         print('This will only be shown once.')
     else:
@@ -56,9 +52,10 @@ commands = {
 }
 
 def main():
-    parser = argparse.ArgumentParser(description='memex clis',
-                        epilog=textwrap.dedent('\n'.join(list(map(lambda c: commands[c].usage, commands.keys()))))
-                    )
+    parser = ArgumentParser(description='memex clis',
+                formatter_class=RawTextHelpFormatter,
+                epilog='\n'.join(list(map(lambda c: commands[c].usage, commands.keys())))
+            )
     parser.add_argument('command', metavar='command', type=str, nargs=1,
                         help='<command>')
     parser.add_argument('args', metavar='args', type=str, nargs='*',
