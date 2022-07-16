@@ -29,11 +29,3 @@ def add_auth_token(name, salt):
         return False
     return True
 
-
-if __name__ == '__main__':
-    print("starting...")
-
-    print(get_all_tokens())
-    add_auth_token('test', 'test-salt')
-
-    print("finished")
