@@ -32,8 +32,15 @@ class EntryModel(Base):
     
     def __init__(self, url, keywords):
         self.url = url
+        if type(keywords) == str:
+            keywords = keywords.split(',')
         if ','.join(keywords).split(',') != keywords: raise InvalidKeywordException()
         self.keywords = ','.join(keywords)
     
     def __repr__(self):
         return f'<Entry id={self.id} url={self.url[:5]} keywords={self.keywords} time_created={self.time_created} time_updated={self.time_updated}>'
+
+    def as_dict(self):
+        l = ['id', 'url', 'keywords']
+        return {k:self.__dict__[k] for k in l}
+

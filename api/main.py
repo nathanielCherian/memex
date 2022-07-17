@@ -1,5 +1,6 @@
 from flask import Flask, request
 from memex.auth import validate_token
+from memex.entry import create_entry, save_entry
 
 app = Flask(__name__)
 
@@ -11,6 +12,13 @@ def index():
         if(status):
             print("TOKEN AUTHENTICATED...")
             print(request.json)
+            url = request.json['url']
+            keywords = request.json['keywords']
+            entry = create_entry(url=url, keywords=keywords)
+            if not entry: return 'Bad parameters', 400
+            status = save_entry(entry)
+            if not status: return 'Unable to save entry', 500
+            return entry.as_dict()
         else:
             print('TOKEN NOT AUTHENTICATE.')
 

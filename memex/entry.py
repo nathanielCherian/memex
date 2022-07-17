@@ -7,6 +7,8 @@ def create_entry(**kwargs):
         return EntryModel(**kwargs)
     except InvalidKeywordException as e:
         print("invalid keywords")
+    except Exception as e:
+        print("something went wrong..", e)
     return None
 
 def save_entry(entry):

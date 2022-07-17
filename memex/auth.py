@@ -1,4 +1,3 @@
-from operator import truediv
 from .main import create_session
 from .models import AuthModel
 import hashlib
