@@ -18,8 +18,11 @@ def createtoken(sub_args):
 
 
 def listtokens(sub_args):
+    name_pad = 10
     tokens = get_all_tokens()
-    tokenstrs = map(lambda token: f'{token.get_name()}', tokens)
+    tokenstrs = list(map(lambda token: str(token.id).ljust(3) + token.get_name().ljust(10) + str(token.last_accessed), 
+                    tokens))
+    tokenstrs.insert(0, 'ID'.ljust(3)+'Name'.ljust(10) + 'Last Accessed')
     print('\n'.join(tokenstrs))
 
 def file_(sub_args):

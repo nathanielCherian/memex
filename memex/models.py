@@ -1,7 +1,8 @@
+from email.policy import default
 from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.sql import func
 from sqlalchemy.orm import declarative_base
-
+from datetime import datetime
 from .errors import InvalidKeywordException
 
 Base = declarative_base()
@@ -11,6 +12,7 @@ class AuthModel(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(20), nullable=False)
     salt = Column(String(64), nullable=False, unique=True)
+    last_accessed = Column(DateTime(timezone=True), default=None)
 
     def __init__(self, name, salt):
         self.name = name
@@ -21,6 +23,10 @@ class AuthModel(Base):
 
     def get_name(self):
         return self.name
+
+    def touch(self):
+        self.last_accessed = datetime.now()
+
 
 class EntryModel(Base):
     __tablename__ = "entries"

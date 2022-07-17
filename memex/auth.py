@@ -13,6 +13,9 @@ def find_token(salt):
     try:
         session = create_session()
         res = session.query(AuthModel).filter(AuthModel.salt == salt).first()
+        if res:
+            res.touch()
+            session.commit()
         return res
     except Exception as e:
         print("failed to search for token...", e)
@@ -40,7 +43,7 @@ def add_auth_token(name, salt):
         session.add(auth)
         session.commit()
     except Exception as e:
-        print('failed to add new token')
+        print('failed to add new token', e)
         return False
     return True
 

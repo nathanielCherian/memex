@@ -2,7 +2,7 @@ import requests
 
 url = 'http://localhost:3000'
 headers = {'content-type': 'application/json',
-           'memex-token':'6de50430-e776-41eb-9605-8c43c671cf34'}
+           'memex-token':'d40c00cd-d595-4693-ac10-95a8a1290e29'}
 obj = {
     'url':'http://example.com',
     'keywords':'test',
