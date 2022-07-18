@@ -11,3 +11,8 @@ def create_session():
     session.expire_on_commit = False # HOPEFULLY THIS IS NOT A PROBLEM
     return session
 
+def exec_command(command):
+    engine = create_engine("sqlite:///example.db")
+    with engine.connect() as con:
+        rs = con.execute(command)
+        return list(rs)
