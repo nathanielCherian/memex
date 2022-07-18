@@ -1,7 +1,10 @@
 from memex.entry import create_entry
 from memex.main import create_session
 import random
+import time
 import os
+
+from memex.search import search_keywords, search_keywords_and, search_keywords_or
 
 dirname = os.path.dirname(__file__)
 nouns_file = os.path.join(dirname, 'data/nouns.txt')
@@ -15,8 +18,18 @@ def populate_entries(n):
     session.commit()
 
 def timeit(func, desc):
-    return
+    start = time.perf_counter()
+    out = func()
+    end = time.perf_counter()
+    print("elapsed time for '"+desc+ "' "+str(end-start))
+    return out
 
 if __name__ == '__main__':
     os.remove(test_db)
-    populate_entries(1000)
+    timeit(lambda: populate_entries(10000), "database population")
+    _ = timeit(lambda: search_keywords_or(['government']), "one word search")
+    _ = timeit(lambda: search_keywords_or(['government', 'instruction']), "two word search")
+    _ = timeit(lambda: search_keywords_and(['government', 'instruction']), "two word intersection search")
+
+    # print('\n'.join([str(e) for e in entries]))
+    # populate_entries(1000)
