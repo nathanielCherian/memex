@@ -1,7 +1,7 @@
 from memex.auth import add_auth_token, gen_token, get_all_tokens
 from memex.entry import create_entry, list_entries, save_entry
 from argparse import ArgumentParser, RawTextHelpFormatter
-
+import sys
 
 def not_found(x):
     print('command not recognized.')
@@ -34,7 +34,9 @@ def file_(sub_args):
 
 def list_(x):
     entries = list_entries()
-    print(entries)
+    r = lambda e: str(e.id).ljust(4) + e.url.ljust(19) + " "+str(e.keywords)
+    entry_strs = list(map(r, entries))
+    print('\n'.join(entry_strs))
 
 def set_remote(x):
     raise Exception("not implemented yet.")
@@ -54,7 +56,8 @@ commands = {
     'set-remote':set_remote
 }
 
-def main():
+
+def parse_args(args):
     parser = ArgumentParser(description='memex clis',
                 formatter_class=RawTextHelpFormatter,
                 epilog='\n'.join(list(map(lambda c: commands[c].usage, commands.keys())))
@@ -64,13 +67,17 @@ def main():
     parser.add_argument('args', metavar='args', type=str, nargs='*',
                         help='<args>')
 
-    args = parser.parse_args()
+    return parser.parse_args(args)
 
-    command = args.command[0]
-    sub_args = args.args
-
+def execute_args(parsed_args):
+    command = parsed_args.command[0]
+    sub_args = parsed_args.args
     commands.get(command, not_found)(sub_args)
 
     
+
+def main():
+    parsed_args = parse_args(sys.argv[1:])
+    execute_args(parsed_args)
 
 # print(args) epilog='\n'.join(map(lambda c: commands[c].usage, commands.keys()))
