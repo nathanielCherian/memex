@@ -17,3 +17,12 @@ def search_keywords(func, keywords):
         print("unable to search...", e)
     return []
 
+
+def search_url(substr):
+    try:
+        session = create_session()
+        e = session.query(EntryModel).filter(EntryModel.url.contains(substr)).all()
+        return e
+    except Exception as e:
+        print("unable to search...", e)
+
