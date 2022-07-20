@@ -1,4 +1,3 @@
-from memex.auth import add_auth_token, gen_token, get_all_tokens
 from memex.entry import create_entry, find_entry, list_entries, save_entry
 from argparse import ArgumentParser, RawTextHelpFormatter
 import sys

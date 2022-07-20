@@ -1,4 +1,5 @@
 from memex.auth import gen_token, get_all_tokens
+from memex.api import start_server
 from argparse import ArgumentParser, RawTextHelpFormatter
 import sys 
 
@@ -26,7 +27,7 @@ def listtokens(parsed_args):
 
 
 def start(parsed_args):
-    raise Exception("not implemented yet")
+    start_server()
     return
 
 def revoke(parsed_args):

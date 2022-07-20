@@ -1,1 +1,3 @@
 - verbose error messages
+- backups for database
+- create .memex config file

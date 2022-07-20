@@ -1,14 +1,16 @@
 from flask import Flask, request
-from memex.auth import validate_token
-from memex.entry import create_entry, save_entry
-from .utils import get_token
+from .auth import validate_token
+from .entry import create_entry, save_entry
+from .utils import parse_token
 
 app = Flask(__name__)
+
+
 
 @app.route("/", methods=['POST'])
 def index():
     if request.method == 'POST' :
-        token = get_token(request)
+        token = parse_token(request)
         status = validate_token(token)
         if(status):
             print("TOKEN AUTHENTICATED...")
@@ -31,9 +33,13 @@ def index():
 @app.route("/test", methods=['POST'])
 def test():
     if request.method == 'POST':
-        token = get_token(request)
+        token = parse_token(request)
         status = validate_token
         return {status:status}
 
-if __name__ == "__main__":
+
+def start_server():
     app.run(debug=True, port=3000)
+
+if __name__ == "__main__":
+    start_server()
