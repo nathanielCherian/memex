@@ -2,6 +2,11 @@ from .main import create_session
 from .models import EntryModel
 from .errors import InvalidKeywordException
 
+def create_from_dict(dict):
+    attribs = ['url', 'keywords']
+    kwargs = {k:dict[k] for k in attribs}
+    return create_entry(**kwargs)
+
 def create_entry(**kwargs):
     try:
         return EntryModel(**kwargs)
