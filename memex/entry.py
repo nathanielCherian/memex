@@ -27,3 +27,10 @@ def list_entries():
         return session.query(EntryModel).all()
     except Exception as e:
         print("something went wrong...", e)
+
+def find_entry(id_):
+    try:
+        session = create_session()
+        return session.query(EntryModel).filter(EntryModel.id == id_).first()
+    except Exception as e:
+        print("something went wrong...", e)

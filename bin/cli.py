@@ -1,5 +1,5 @@
 from memex.auth import add_auth_token, gen_token, get_all_tokens
-from memex.entry import create_entry, list_entries, save_entry
+from memex.entry import create_entry, find_entry, list_entries, save_entry
 from argparse import ArgumentParser, RawTextHelpFormatter
 import sys
 
@@ -35,10 +35,16 @@ def search(parsed_args):
     r = lambda e: str(e.id).ljust(4) + e.url.ljust(19) + " "+str(e.keywords)
     entry_strs = list(map(r, entries))
     print('\n'.join(entry_strs))
-    return
+    
 
-def inspect(sub_args):
-    raise Exception("not implemented yet.")
+def inspect(parsed_args):
+    sub_args = parsed_args.args
+    entry = find_entry(sub_args[0])
+    if entry is None: 
+        print("That entry does not exist.")
+        return
+    print(f'url: {entry.url}\ndate-created: {entry.time_created}\nkeywords: {entry.keywords}\n')
+
 
 def set_remote(x):
     raise Exception("not implemented yet.")
@@ -55,6 +61,7 @@ commands = {
     'list':list_,
     'set-remote':set_remote,
     'search':search,
+    'inspect':inspect,
 }
 
 
