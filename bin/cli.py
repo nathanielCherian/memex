@@ -20,6 +20,7 @@ def file_(parsed_args):
 
 def list_(x):
     entries = list_entries()
+    print(f"showing {len(entries)} entries")
     r = lambda e: str(e.id).ljust(4) + e.url.ljust(19) + " "+str(e.keywords)
     entry_strs = list(map(r, entries))
     print('\n'.join(entry_strs))
@@ -42,7 +43,7 @@ def inspect(sub_args):
 def set_remote(x):
     raise Exception("not implemented yet.")
 
-file_.usage = 'file <url?> <keywords(csv)?>'
+file_.usage = 'file <url?> <keywords (csv)?>'
 list_.usage = 'list'
 set_remote.usage = 'set-remote <server-url>'
 search.usage = 'search [keywords...]'
@@ -76,6 +77,7 @@ def execute_args(parsed_args):
 
 
 
-def main():
-    parsed_args = parse_args(sys.argv[1:])
+def main(args=None):
+    if args is None: args = sys.argv[1:]
+    parsed_args = parse_args(args)
     execute_args(parsed_args)

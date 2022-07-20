@@ -24,14 +24,13 @@ def find_token(salt):
 def validate_token(token):
     salt = hashlib.sha256(str.encode(token)).hexdigest()
     search_res = find_token(salt)
-    if search_res:
-        return True
-    return False
+    validity = True if search_res is not None and search_res.valid else False
+    return validity
 
 def get_all_tokens():
     try:
         session = create_session()
-        return session.query(AuthModel).all()
+        return session.query(AuthModel).filter(AuthModel.valid == True).all()
     except Exception as e:
         print("failed to get tokens...", e)
     return []
@@ -47,3 +46,13 @@ def add_auth_token(name, salt):
         return False
     return True
 
+def revoke_token(id_):
+    try:
+        session = create_session()
+        res = session.query(AuthModel).filter(AuthModel.id == id_).first()
+        if not res: return
+        res.valid = False
+        session.commit()
+    except Exception as e:
+        print("something went wrong revoking...",e)
+        

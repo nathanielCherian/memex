@@ -1,5 +1,5 @@
 from email.policy import default
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String, DateTime, Boolean
 from sqlalchemy.sql import func
 from sqlalchemy.orm import declarative_base
 from datetime import datetime
@@ -13,6 +13,7 @@ class AuthModel(Base):
     name = Column(String(20), nullable=False)
     salt = Column(String(64), nullable=False, unique=True)
     last_accessed = Column(DateTime(timezone=True), default=None)
+    valid = Column(Boolean(), default=True)
 
     def __init__(self, name, salt):
         self.name = name

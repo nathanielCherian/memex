@@ -63,6 +63,7 @@ def execute_args(parsed_args):
     command = parsed_args.command[0]
     commands.get(command, not_found)(parsed_args)
 
-def main():
-    parsed_args = parse_args(sys.argv[1:])
+def main(args=None):
+    if args is None: args = sys.argv[1:]
+    parsed_args = parse_args(args)
     execute_args(parsed_args)
