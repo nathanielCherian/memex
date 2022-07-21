@@ -17,3 +17,6 @@ def test_server__create(capsys):
 
 def test_server__list(capsys):
     server_main(['list'])
+
+def test_server__revoke(capsys):
+    server_main(['revoke', '1'])

@@ -1,18 +1,38 @@
+from requests.exceptions import ConnectionError
+from memex.auth import gen_token
 import requests
+import json
+import pytest
 
-url = 'http://localhost:3000'
-headers = {'content-type': 'application/json',
-           'memex-token':'53cbff44-ddbb-4e10-ab45-662dcfbf0243'}
-obj = {
-    'url':'http://example.com',
-    'keywords':'test',
-}
-
-x = requests.post(url, json=obj, headers=headers)
-
-print(x)
-print(x.content) 
+url = 'http://localhost:3000/'
+headers = {'content-type': 'application/json'}
 
 
-# def _test_api():
-    
+
+@pytest.fixture
+def token():
+    token = gen_token('foo')
+    return token
+
+def is_open():
+    try:
+        x = requests.head(url)
+    except ConnectionError as e:
+        raise Exception("run api before proceeding with tests...`")  
+
+def test_token(token):
+    headers['memex-token'] = token
+    x = requests.post(url+'test-token', headers=headers)
+    res = json.loads(x.content)
+    assert res['status'] == True
+
+def test_create(token):
+    headers['memex-token'] = token
+    obj = {
+        'url':'http://example.com',
+        'keywords':'test, test2',
+    }
+    x = requests.post(url, json=obj, headers=headers)
+    res = json.loads(x.content)
+    assert res['url'] == obj['url'] and res['keywords'] == 'test, test2'
+

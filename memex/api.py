@@ -5,20 +5,19 @@ from .utils import parse_token
 
 app = Flask(__name__)
 
-def handle_request(req, on_sucess, on_failure):
+def handle_request(req, on_success, on_failure):
     token = parse_token(request)
-    print(token)
     status = validate_token(token)
     if status:
-        return on_sucess(req.json)
+        return on_success(req)
     else:
         return on_failure()
 
 
 @app.route("/", methods=['POST'])
 def index():
-
-    def success(req_json):
+    def success(req):
+        req_json = req.json
         print("token authenticated")
         entry = create_from_dict(req_json)
         if not entry: return 'Bad parameters', 400
@@ -41,8 +40,12 @@ def inspect():
 
 @app.route("/test-token", methods=['POST'])
 def test():
+    def suc(x):
+        return {'status':True}
+    def fail():
+        return {'status':False}
     if request.method == 'POST':
-        return handle_request(request, lambda: {'status':True}, lambda: {'status':False})
+        return handle_request(request, suc, fail)
     return
 
 def start_server():
