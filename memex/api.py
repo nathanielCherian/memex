@@ -7,6 +7,7 @@ app = Flask(__name__)
 
 def handle_request(req, on_sucess, on_failure):
     token = parse_token(request)
+    print(token)
     status = validate_token(token)
     if status:
         return on_sucess(req.json)

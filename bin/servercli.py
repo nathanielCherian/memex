@@ -1,4 +1,4 @@
-from memex.auth import gen_token, get_all_tokens
+from memex.auth import delete_token, gen_token, get_all_tokens
 from memex.api import start_server
 from argparse import ArgumentParser, RawTextHelpFormatter
 import sys 
@@ -31,13 +31,19 @@ def start(parsed_args):
     return
 
 def revoke(parsed_args):
-    raise Exception("Not implemented yet")
+    sub_args = parsed_args.args
+    if len(sub_args) < 1:
+        print("Failed to revoke token. Missing <token-id>.")
+        return
+    id = sub_args[0]
+    delete_token(id)
+    print("Successfully revoked token.")
     return
 
 createtoken.usage = 'create <token-name>'
 listtokens.usage = 'list'
 start.usage = 'start'
-revoke.usage = 'revoke <entry-id>'
+revoke.usage = 'revoke <token-id>'
 
 commands = {
     'create':createtoken,

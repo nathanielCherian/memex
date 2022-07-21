@@ -21,16 +21,26 @@ def find_token(salt):
         print("failed to search for token...", e)
     return None
 
+def delete_token(id_):
+    try:
+        session = create_session()
+        token = session.query(AuthModel).filter(AuthModel.id == id_).first()
+        if not token: return False
+        session.delete(token)
+        session.commit()
+    except Exception as e:
+        print("something went wrong...",e)
+
 def validate_token(token):
     salt = hashlib.sha256(str.encode(token)).hexdigest()
     search_res = find_token(salt)
-    validity = True if search_res is not None and search_res.valid else False
+    validity = True if search_res else False
     return validity
 
 def get_all_tokens():
     try:
         session = create_session()
-        return session.query(AuthModel).filter(AuthModel.valid == True).all()
+        return session.query(AuthModel).all()
     except Exception as e:
         print("failed to get tokens...", e)
     return []
