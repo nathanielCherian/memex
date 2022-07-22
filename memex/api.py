@@ -1,7 +1,7 @@
 from flask import Flask, request
 from memex.config import read_config
 from .auth import validate_token
-from .entry import create_from_dict, save_entry
+from .entry import create_entry, save_entry
 from .utils import parse_token
 
 app = Flask(__name__)
@@ -20,7 +20,7 @@ def index():
     def success(req):
         req_json = req.json
         print("token authenticated")
-        entry = create_from_dict(req_json)
+        entry = create_entry(req_json)
         if not entry: return 'Bad parameters', 400
         status = save_entry(entry)
         if not status: return 'Unable to save entry', 500

@@ -13,7 +13,7 @@ def file_(parsed_args):
     sub_args = parsed_args.args
     url = sub_args[0] if len(sub_args) > 0 else input('URL of website to store: ')
     keywords = sub_args[1:] if len(sub_args) > 1 else input('Enter keywords (comma seperated): ').split(',')
-    entry = create_entry(url=url, keywords=keywords)
+    entry = create_entry({'url':url, 'keywords':keywords})
     status = save_entry(entry)
     print("Saved entry successfully!") if status else print("Failed to save entry...")
 

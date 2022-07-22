@@ -7,8 +7,10 @@ def create_from_dict(dict):
     kwargs = {k:dict[k] for k in attribs}
     return create_entry(**kwargs)
 
-def create_entry(**kwargs):
+def create_entry(entry_dict):
     try:
+        attribs = ['url', 'keywords']
+        kwargs = {k:entry_dict[k] for k in attribs}
         return EntryModel(**kwargs)
     except InvalidKeywordException as e:
         print("invalid keywords")

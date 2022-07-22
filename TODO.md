@@ -1,4 +1,5 @@
 - verbose error messages
 - backups for database
-- create .memex config file
+- ~~create .memex config file~~
+- Options/piping for filing
 - logging

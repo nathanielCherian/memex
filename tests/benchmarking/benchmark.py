@@ -14,7 +14,7 @@ def populate_entries(n):
     nouns = open(nouns_file, 'r').read().split('\n')[:100]
     website = lambda: f'https://{random.choice(nouns)}.com/'
     session = create_session()
-    entries = [create_entry(url=website(), keywords=random.choices(nouns, k=3)) for _ in range(n)]
+    entries = [create_entry({'url':website(), 'keywords':random.choices(nouns, k=3)}) for _ in range(n)]
     session.bulk_save_objects(entries)
     session.commit()
 
