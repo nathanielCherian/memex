@@ -17,8 +17,13 @@ def create_entry(entry_dict, options=[]):
             options.extend(new_opts)
 
         for option in options:
-            print("Running option: ", option)
-        
+            option_handler_file = conf['option-provider'].get(option, '')
+            if not option_handler_file:
+                print(f"option handler not found for '{option}'. skipping...")
+                continue
+            option_handler = load_module(option_handler_file)
+            entry_dict = option_handler(entry_dict)
+
         attribs = ['url', 'keywords']
         kwargs = {k:entry_dict[k] for k in attribs}
         return EntryModel(**kwargs)
