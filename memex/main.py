@@ -1,11 +1,14 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
-from .constants import DB_PATH
+
+from memex.config import read_config
 from .models import Base 
 
 
 def create_session():
-    engine = create_engine("sqlite:///"+DB_PATH, echo=False, future=True)
+    conf = read_config()
+    dbpath = conf['DEFAULT']['db_path']
+    engine = create_engine("sqlite:///"+dbpath, echo=False, future=True)
     Base.metadata.create_all(engine)
     session = Session(engine)
     session.expire_on_commit = False # HOPEFULLY THIS IS NOT A PROBLEM

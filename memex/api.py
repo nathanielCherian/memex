@@ -1,6 +1,7 @@
 from flask import Flask, request
+from memex.config import read_config
 from .auth import validate_token
-from .entry import create_entry, create_from_dict, save_entry
+from .entry import create_from_dict, save_entry
 from .utils import parse_token
 
 app = Flask(__name__)
@@ -49,7 +50,8 @@ def test():
     return
 
 def start_server():
-    app.run(debug=True, port=3000)
+    conf = read_config()
+    app.run(debug=True, port=conf['DEFAULT']['API_PORT'])
 
 if __name__ == "__main__":
     start_server()
