@@ -3,3 +3,4 @@
 - ~~create .memex config file~~
 - Options/piping for filing
 - logging
+- Database to/from csv

@@ -1,14 +1,24 @@
+from memex.utils import load_module
 from .main import create_session
 from .models import EntryModel
 from .errors import InvalidKeywordException
+from .config import read_config
 
-def create_from_dict(dict):
-    attribs = ['url', 'keywords']
-    kwargs = {k:dict[k] for k in attribs}
-    return create_entry(**kwargs)
-
-def create_entry(entry_dict):
+def create_entry(entry_dict, options=[]):
     try:
+        # First generate options using user-provided function
+        conf = read_config()
+        option_gen = conf['option-provider'].get('option-gen', '')
+        if option_gen:
+            option_gen_func = load_module(option_gen)
+            new_opts = option_gen_func(entry_dict)
+            if type(new_opts) != list:
+                raise Exception(f"Return value of function at '{option_gen}' is not a list")
+            options.extend(new_opts)
+
+        for option in options:
+            print("Running option: ", option)
+        
         attribs = ['url', 'keywords']
         kwargs = {k:entry_dict[k] for k in attribs}
         return EntryModel(**kwargs)

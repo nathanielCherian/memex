@@ -7,8 +7,6 @@ import pytest
 url = 'http://localhost:3000/'
 headers = {'content-type': 'application/json'}
 
-
-
 @pytest.fixture
 def token():
     token = gen_token('foo')
