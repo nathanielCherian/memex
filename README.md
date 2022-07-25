@@ -7,9 +7,13 @@ NOTE: This project is still in development.
 
 ## Installation
 Memex uses the [poetry package manager](https://python-poetry.org/). Please install using the directions from their website before continuing
+
 ```$ git clone https://github.com/nathanielCherian/memex```
+
 ```$ cd memex && poetry install```
+
 ```$ poetry shell```
+
 This will activate the poetry virtual enviornment
 
 ## Configuration
