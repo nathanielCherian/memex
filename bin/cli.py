@@ -48,7 +48,7 @@ def inspect(parsed_args):
 def set_remote(x):
     raise Exception("not implemented yet.")
 
-file_.usage = 'file <url?> <keywords (csv)?>'
+file_.usage = 'file <url?> <keywords?>'
 list_.usage = 'list'
 set_remote.usage = 'set-remote <server-url>'
 search.usage = 'search [keywords...]'

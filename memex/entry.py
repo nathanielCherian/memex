@@ -6,23 +6,26 @@ from .config import read_config
 
 def create_entry(entry_dict, options=[]):
     try:
-        # First generate options using user-provided function
-        conf = read_config()
-        option_gen = conf['option-provider'].get('option-gen', '')
-        if option_gen:
-            option_gen_func = load_module(option_gen)
-            new_opts = option_gen_func(entry_dict)
-            if type(new_opts) != list:
-                raise Exception(f"Return value of function at '{option_gen}' is not a list")
-            options.extend(new_opts)
 
-        for option in options:
-            option_handler_file = conf['option-provider'].get(option, '')
-            if not option_handler_file:
-                print(f"option handler not found for '{option}'. skipping...")
-                continue
-            option_handler = load_module(option_handler_file)
-            entry_dict = option_handler(entry_dict)
+        # TEMPORARLIY TURN OFF OPTION-HANDLING
+
+        # First generate options using user-provided function
+        # conf = read_config()
+        # option_gen = conf['option-provider'].get('option-gen', '')
+        # if option_gen:
+        #     option_gen_func = load_module(option_gen)
+        #     new_opts = option_gen_func(entry_dict)
+        #     if type(new_opts) != list:
+        #         raise Exception(f"Return value of function at '{option_gen}' is not a list")
+        #     options.extend(new_opts)
+
+        # for option in options:
+        #     option_handler_file = conf['option-provider'].get(option, '')
+        #     if not option_handler_file:
+        #         print(f"option handler not found for '{option}'. skipping...")
+        #         continue
+        #     option_handler = load_module(option_handler_file)
+        #     entry_dict = option_handler(entry_dict)
 
         attribs = ['url', 'keywords']
         kwargs = {k:entry_dict[k] for k in attribs}
