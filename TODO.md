@@ -2,9 +2,9 @@
 - backups for database
 - logging
 - Database ~~to~~/from csv
-- enhance CLI, more detailed help
+- ~~enhance CLI~~, more detailed help
 - add flags to certain CLI commands
-    - search
+    - ~~search~~
 
 - Options/plugins for filing
 

@@ -1,10 +1,12 @@
 from requests.exceptions import ConnectionError
 from memex.auth import gen_token
+from memex.config import read_config
 import requests
 import json
 import pytest
 
-url = 'http://localhost:3000/'
+port = read_config()['DEFAULT']['API_PORT']
+url = f'http://localhost:{port}/'
 headers = {'content-type': 'application/json'}
 
 @pytest.fixture

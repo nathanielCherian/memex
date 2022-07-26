@@ -5,11 +5,7 @@ from argparse import ArgumentParser, RawTextHelpFormatter
 import sys
 import csv
 
-from memex.search import search_keywords_or
-
-def not_found(x):
-    print('command not recognized.')
-    print('see help.')
+from memex.search import search_keywords_and, search_keywords_or
 
 class BaseCommand():
     def __init__(self, subparsers) -> None:
@@ -62,14 +58,19 @@ class SearchCommand(BaseCommand):
 
     def create_parser(self):
         self.parser.add_argument('terms', metavar='terms', nargs='*')
+        self.parser.add_argument('-i', dest='intersection', action='store_true', help='Find intersection of search queries')
         return
 
     def handle_command(self, parsed_args):
         terms = parsed_args.terms
+        intersection = parsed_args.intersection
+        print(intersection)
         if len(terms) < 1:
             print('No search queries provided.')
             return
-        entries = search_keywords_or(terms)
+
+        entries = search_keywords_and(terms) if intersection else search_keywords_or(terms)
+
         print(f'Found {len(entries)} entries...')
         r = lambda e: str(e.id).ljust(4) + e.url.ljust(19) + " "+str(e.keywords)
         entry_strs = list(map(r, entries))
@@ -81,11 +82,11 @@ class InspectCommand(BaseCommand):
     description = 'inspect description'
 
     def create_parser(self):
-        self.parser.add_argument('id', metavar='id', nargs=1)
+        self.parser.add_argument('id', metavar='id', nargs=1, type=int)
     
     def handle_command(self, parsed_args):
         id_ = parsed_args.id[0]
-        entry = find_entry(int(id_))
+        entry = find_entry(id_)
         if entry is None: 
             print("That entry does not exist.")
             return

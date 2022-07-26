@@ -27,7 +27,7 @@ def timeit(func, desc):
 
 if __name__ == '__main__':
     #os.remove(test_db)
-    timeit(lambda: populate_entries(1000), "database population")
+    timeit(lambda: populate_entries(100), "database population")
     _ = timeit(lambda: search_keywords_or(['government']), "one word search")
     _ = timeit(lambda: search_keywords_or(['government', 'instruction']), "two word search")
     _ = timeit(lambda: search_keywords_and(['government', 'instruction']), "two word intersection search")
