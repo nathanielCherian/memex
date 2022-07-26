@@ -46,6 +46,13 @@ class EntryModel(Base):
     
     def __repr__(self):
         return f'<Entry id={self.id} url={self.url[:5]} keywords={self.keywords} time_created={self.time_created} time_updated={self.time_updated}>'
+    
+    @staticmethod
+    def csv_headers():
+        return 'id, url, keywords, time_created, time_updated'
+
+    def to_csv(self):
+        return f'{self.id}, "{self.url}", "{self.keywords}", "{self.time_created}", {self.time_updated}'
 
     def as_dict(self):
         l = ['id', 'url', 'keywords']

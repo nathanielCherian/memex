@@ -1,6 +1,9 @@
+import argparse
+from pydoc import describe
 from memex.entry import create_entry, find_entry, list_entries, save_entry
 from argparse import ArgumentParser, RawTextHelpFormatter
 import sys
+import csv
 
 from memex.search import search_keywords_or
 
@@ -8,82 +11,136 @@ def not_found(x):
     print('command not recognized.')
     print('see help.')
 
-
-def file_(parsed_args):
-    sub_args = parsed_args.args
-    url = sub_args[0] if len(sub_args) > 0 else input('URL of website to store: ')
-    keywords = sub_args[1:] if len(sub_args) > 1 else input('Enter keywords (comma seperated): ').split(',')
-    entry = create_entry({'url':url, 'keywords':keywords})
-    status = save_entry(entry)
-    print("Saved entry successfully!") if status else print("Failed to save entry...")
-
-def list_(x):
-    entries = list_entries()
-    print(f"showing {len(entries)} entries")
-    r = lambda e: str(e.id).ljust(4) + e.url.ljust(19) + " "+str(e.keywords)
-    entry_strs = list(map(r, entries))
-    print('\n'.join(entry_strs))
-
-def search(parsed_args):
-    sub_args = parsed_args.args
-    if len(sub_args) < 1:
-        print('No search queries provided.')
-        return
-    entries = search_keywords_or(sub_args)
-    print(f'Found {len(entries)} entries...')
-    r = lambda e: str(e.id).ljust(4) + e.url.ljust(19) + " "+str(e.keywords)
-    entry_strs = list(map(r, entries))
-    print('\n'.join(entry_strs))
+class BaseCommand():
+    def __init__(self, subparsers) -> None:
+        self.register_parser(subparsers)
+        self.create_parser()
     
+    def register_parser(self, subparsers):
+        self.parser = subparsers.add_parser(self.command,
+            description=self.description
+        )
 
-def inspect(parsed_args):
-    sub_args = parsed_args.args
-    entry = find_entry(sub_args[0])
-    if entry is None: 
-        print("That entry does not exist.")
+    def create_parser(self):
         return
-    print(f'url: {entry.url}\ndate-created: {entry.time_created}\nkeywords: {entry.keywords}\n')
+
+    def handle_command(self, parsed_args):
+        return
+    
+class FileCommand(BaseCommand):
+    command = 'file'
+    description = 'file description'
+
+    def create_parser(self):
+        self.parser.add_argument('url', metavar='url', nargs='?')
+        self.parser.add_argument('keywords', metavar='keywords', nargs='*')
+        return
+    
+    def handle_command(self, parsed_args):
+        url = parsed_args.url if parsed_args.url else input('URL of website to store: ')
+        keywords = parsed_args.keywords if parsed_args.keywords else input('Enter keywords (comma seperated): ').split(',')
+        entry = create_entry({'url':url, 'keywords':keywords})
+        status = save_entry(entry)
+        print("Saved entry successfully!") if status else print("Failed to save entry...")
 
 
-def set_remote(x):
-    raise Exception("not implemented yet.")
+class ListCommand(BaseCommand):
+    command = 'list'
+    description = 'list description'
 
-file_.usage = 'file <url?> <keywords?>'
-list_.usage = 'list'
-set_remote.usage = 'set-remote <server-url>'
-search.usage = 'search [keywords...]'
-inspect.usage = 'inspect <entry-id>'
+    def handle_command(self, parsed_args):
+        entries = list_entries()
+        print(f"showing {len(entries)} entries")
+        r = lambda e: str(e.id).ljust(4) + e.url.ljust(19) + " "+str(e.keywords)
+        entry_strs = list(map(r, entries))
+        print('\n'.join(entry_strs))
+        return 
+
+class SearchCommand(BaseCommand):
+    command = 'search'
+    description = 'search description'
+
+    def create_parser(self):
+        self.parser.add_argument('terms', metavar='terms', nargs='*')
+        return
+
+    def handle_command(self, parsed_args):
+        terms = parsed_args.terms
+        if len(terms) < 1:
+            print('No search queries provided.')
+            return
+        entries = search_keywords_or(terms)
+        print(f'Found {len(entries)} entries...')
+        r = lambda e: str(e.id).ljust(4) + e.url.ljust(19) + " "+str(e.keywords)
+        entry_strs = list(map(r, entries))
+        print('\n'.join(entry_strs))
+        return 
+
+class InspectCommand(BaseCommand):
+    command = 'inspect'
+    description = 'inspect description'
+
+    def create_parser(self):
+        self.parser.add_argument('id', metavar='id', nargs=1)
+    
+    def handle_command(self, parsed_args):
+        id_ = parsed_args.id
+        entry = find_entry(id_)
+        if entry is None: 
+            print("That entry does not exist.")
+            return
+        print(f'url: {entry.url}\ndate-created: {entry.time_created}\nkeywords: {entry.keywords}\n')
+
+class ExportCommand(BaseCommand):
+    command = 'export'
+    description = 'export command'
+
+    def handle_command(self, parsed_args):
+        entries = list_entries()
+        es = map(lambda e: e.to_csv(), entries)
+        print('\n'.join(es))
+
+# file_.usage = 'file <url?> <keywords?>', 'Stores a new entry to the database. keywords are space-seperated.'
+# list_.usage = 'list', 'Shows all entrys in the database'
+# search.usage = 'search [keywords...]', 'Returns entries that match one or more of the keywords given. Keywords are space-seperated'
+# inspect.usage = 'inspect <entry-id>', 'Displays full entry of given id.'
+# export.usage = 'export', 'prints the database to output in CSV format'
+# set_remote.usage = 'set-remote <server-url>'
 
 
-commands = {
-    'file':file_,
-    'list':list_,
-    'set-remote':set_remote,
-    'search':search,
-    'inspect':inspect,
-}
 
 
 def parse_args(args):
+
+    # epilog = '\n'.join(
+    #     list(map(
+    #         lambda c: commands[c].usage[0].ljust(30)+commands[c].usage[1],
+    #         commands.keys()
+    #     ))
+    # )
+
     parser = ArgumentParser(
         description='memex clis',
         formatter_class=RawTextHelpFormatter,
-        epilog='\n'.join(list(map(lambda c: commands[c].usage, commands.keys())))
     )
-    parser.add_argument('command', metavar='command', type=str, nargs=1,
-                        help='<command>')
-    parser.add_argument('args', metavar='args', type=str, nargs='*',
-                        help='<args>')
 
-    return parser.parse_args(args)
+    subparsers = parser.add_subparsers(description='sub-description', dest='command')
 
-def execute_args(parsed_args):
-    command = parsed_args.command[0]
-    commands.get(command, not_found)(parsed_args)
+    parsers = [
+        Command(subparsers)
+        for Command in BaseCommand.__subclasses__()
+    ]
 
+    parsed_args = parser.parse_args(args)
+    command = parsed_args.command
 
+    for parser in parsers:
+        if parser.command == command:
+            parser.handle_command(parsed_args)
+            return
+    
+    return
 
 def main(args=None):
     if args is None: args = sys.argv[1:]
-    parsed_args = parse_args(args)
-    execute_args(parsed_args)
+    parse_args(args)

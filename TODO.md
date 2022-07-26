@@ -1,6 +1,11 @@
 - verbose error messages
 - backups for database
-- ~~create .memex config file~~
-- Options/piping for filing
 - logging
-- Database to/from csv
+- Database ~~to~~/from csv
+- enhance CLI, more detailed help
+- add flags to certain CLI commands
+    - search
+
+- Options/plugins for filing
+
+- ~~create .memex config file~~
