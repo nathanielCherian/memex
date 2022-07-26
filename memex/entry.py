@@ -59,3 +59,4 @@ def find_entry(id_):
         return session.query(EntryModel).filter(EntryModel.id == id_).first()
     except Exception as e:
         print("something went wrong...", e)
+    return None

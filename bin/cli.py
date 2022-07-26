@@ -84,8 +84,8 @@ class InspectCommand(BaseCommand):
         self.parser.add_argument('id', metavar='id', nargs=1)
     
     def handle_command(self, parsed_args):
-        id_ = parsed_args.id
-        entry = find_entry(id_)
+        id_ = parsed_args.id[0]
+        entry = find_entry(int(id_))
         if entry is None: 
             print("That entry does not exist.")
             return
@@ -106,9 +106,6 @@ class ExportCommand(BaseCommand):
 # inspect.usage = 'inspect <entry-id>', 'Displays full entry of given id.'
 # export.usage = 'export', 'prints the database to output in CSV format'
 # set_remote.usage = 'set-remote <server-url>'
-
-
-
 
 def parse_args(args):
 
@@ -139,6 +136,8 @@ def parse_args(args):
             parser.handle_command(parsed_args)
             return
     
+    print()
+
     return
 
 def main(args=None):
