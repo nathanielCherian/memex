@@ -19,7 +19,7 @@ config["plugins"] = {}
 
 def safe_create():
     if not isfile(CONFIG_PATH):
-        with open(expanduser("~") + "/.memex", "w") as conf_file:
+        with open(CONFIG_PATH, "w") as conf_file:
             config.write(conf_file)
 
 

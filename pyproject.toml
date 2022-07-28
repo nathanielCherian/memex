@@ -20,7 +20,7 @@ pytest = "^5.2"
 black = "^22.6.0"
 
 [tool.poetry.scripts]
-memex = "bin.cli:main"
+memex = "bin.memex:main"
 memex-api = "bin.memex_api:main"
 
 [build-system]

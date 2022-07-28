@@ -1,4 +1,4 @@
-from bin.cli import main as cli_main
+from bin.memex import main as cli_main
 from bin.memex_api import main as server_main
 from tests.utils import remove_db
 

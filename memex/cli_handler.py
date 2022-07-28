@@ -1,10 +1,17 @@
-from memex.entry import create_entry, find_entry, list_entries, save_entry
-from memex import __version__
-from argparse import ArgumentParser, RawTextHelpFormatter
+from argparse import ArgumentParser
+from enum import Enum
 import sys
 
-from memex.search import search_keywords_and, search_keywords_or
+from .entry import create_entry, save_entry, list_entries, find_entry
+from .auth import delete_token, gen_token, get_all_tokens, delete_token
+from .api import start_server
+from .search import search_keywords_and, search_keywords_or
+from . import __version__
 
+
+class CLI(Enum):
+    MEMEX = 1
+    MEMEX_API = 2
 
 class BaseCommand:
     def __init__(self, subparsers) -> None:
@@ -20,8 +27,20 @@ class BaseCommand:
     def handle_command(self, parsed_args):
         return
 
+    @staticmethod
+    def match(command):
+        return
 
-class FileCommand(BaseCommand):
+class MemexCommand(BaseCommand):
+    pass
+
+class MemexAPICommand(BaseCommand):
+    pass
+
+
+# commands for MEMEX
+
+class FileCommand(MemexCommand):
     command = "file"
     description = "Stores a new entry to the database. keywords are space-seperated."
 
@@ -44,7 +63,7 @@ class FileCommand(BaseCommand):
         )
 
 
-class ListCommand(BaseCommand):
+class ListCommand(MemexCommand):
     command = "list"
     description = "Shows all entrys in the database"
 
@@ -57,7 +76,7 @@ class ListCommand(BaseCommand):
         return
 
 
-class SearchCommand(BaseCommand):
+class SearchCommand(MemexCommand):
     command = "search"
     description = "Returns entries that match one or more of the keywords given. Keywords are space-seperated"
 
@@ -100,7 +119,7 @@ class SearchCommand(BaseCommand):
         return
 
 
-class InspectCommand(BaseCommand):
+class InspectCommand(MemexCommand):
     command = "inspect"
     description = "Displays full entry of given id."
 
@@ -118,7 +137,7 @@ class InspectCommand(BaseCommand):
         )
 
 
-class ExportCommand(BaseCommand):
+class ExportCommand(MemexCommand):
     command = "export"
     description = "export command"
 
@@ -128,50 +147,100 @@ class ExportCommand(BaseCommand):
         print("\n".join(es))
 
 
-# file_.usage = 'file <url?> <keywords?>', 'Stores a new entry to the database. keywords are space-seperated.'
-# list_.usage = 'list', 'Shows all entrys in the database'
-# search.usage = 'search [keywords...]', 'Returns entries that match one or more of the keywords given. Keywords are space-seperated'
-# inspect.usage = 'inspect <entry-id>', 'Displays full entry of given id.'
-# export.usage = 'export', 'prints the database to output in CSV format'
-# set_remote.usage = 'set-remote <server-url>'
+
+# Commands for MEMEX API
+class CreateTokenCommand(MemexAPICommand):
+    command = "create"
+    description = "creates a new authorization token"
+
+    def create_parser(self):
+        self.parser.add_argument("name", metavar="name", nargs="?")
+        return
+
+    def handle_command(self, parsed_args):
+        name = parsed_args.name
+        name = name if name else input("identifying name for token: ")
+        token = gen_token(name)
+        if token:
+            print(f"Here is your token: {token}")
+            print("This will only be shown once.")
+        else:
+            print("ERROR: try again")
 
 
-def parse_args(args):
+class ListTokenCommand(MemexAPICommand):
+    command = "list"
+    description = "lists all valid tokens"
 
-    # epilog = '\n'.join(
-    #     list(map(
-    #         lambda c: commands[c].usage[0].ljust(30)+commands[c].usage[1],
-    #         commands.keys()
-    #     ))
-    # )
-
-    parser = ArgumentParser(
-        description="memex clis",
-        formatter_class=RawTextHelpFormatter,
-    )
-
-    parser.add_argument("-v", "--version", action="version", version=__version__)
-    subparsers = parser.add_subparsers(description="sub-description", dest="command")
-
-    parsers = [Command(subparsers) for Command in BaseCommand.__subclasses__()]
-
-    parsed_args = parser.parse_args(args)
-    command = parsed_args.command
-
-    for parser in parsers:
-        if parser.command == command:
-            parser.handle_command(parsed_args)
-            return
-
-    print("Use the memex cli to interact with your database...\n")
-    for Command in BaseCommand.__subclasses__():
-        print(Command.command.ljust(20) + Command.description)
-    print("\nuse the '-h' flag after each command to see usage")
-
-    return
+    def handle_command(self, parsed_args):
+        tokens = get_all_tokens()
+        tokenstrs = list(
+            map(
+                lambda token: str(token.id).ljust(3)
+                + token.get_name().ljust(10)
+                + str(token.last_accessed),
+                tokens,
+            )
+        )
+        tokenstrs.insert(0, "ID".ljust(3) + "Name".ljust(10) + "Last Accessed")
+        print("\n".join(tokenstrs))
 
 
-def main(args=None):
-    if args is None:
-        args = sys.argv[1:]
-    parse_args(args)
+class RevokeTokenCommand(MemexAPICommand):
+    command = "revoke"
+    description = "revokes a token using its id"
+
+    def create_parser(self):
+        self.parser.add_argument("id", metavar="id", nargs=1, type=int)
+        return
+
+    def handle_command(self, parsed_args):
+        id_ = parsed_args.id[0]
+        status = delete_token(id_)
+        if status:
+            print("Successfully revoked token.")
+
+
+class StartAPICommand(MemexAPICommand):
+    command = "start"
+    description = "starts the API"
+
+    def handle_command(self, parsed_args):
+        start_server()
+
+
+
+class MemexCLI():
+    def __init__(self, cli, args=[]) -> None:
+        if not args:
+            args = sys.argv[1:]
+
+        description = 'memex cli to interact with your database' if cli == CLI.MEMEX else 'memex API and token authorization'
+        parser = ArgumentParser(
+            description=description
+        )
+
+        parser.add_argument("-v", "--version", action="version", version=__version__)
+        subparsers = parser.add_subparsers(description="sub-description", dest="command")
+        
+        CLICommand = MemexCommand if cli == CLI.MEMEX else MemexAPICommand
+
+        Commands = CLICommand.__subclasses__()
+        parsers = [Command(subparsers) for Command in Commands]
+
+        parsed_args = parser.parse_args(args)
+        command = parsed_args.command
+
+        for parser in parsers:
+            if parser.command == command:
+                parser.handle_command(parsed_args)
+                return
+
+        print(description+'\n')
+        for Command in CLICommand.__subclasses__():
+            print(Command.command.ljust(20) + Command.description)
+        print("\nuse the '-h' flag after each command to see usage")
+        
+
+
+
