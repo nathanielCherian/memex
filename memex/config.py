@@ -4,7 +4,7 @@ import configparser
 
 from memex.utils import load_module
 
-CONFIG_PATH = expanduser("~") + "/.memex"
+CONFIG_PATH = expanduser("~") + "/.memexrc"
 
 config = configparser.ConfigParser()
 config["DEFAULT"] = {

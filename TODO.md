@@ -10,7 +10,7 @@
 - ~~create .memex config file~~
 
 ## Noble Recomended Fixes
-- remove requirements
+- ~~remove requirements~~
 - Switch testing to tox
     - black
     - isort
@@ -20,7 +20,7 @@
     - "dev status"
     - installation instructions
 - Find permament location for Database
-- rename .memex to .memexrc
+- ~~rename .memex to .memexrc~~
 - Make testing run api before starting
 - Move CLI code from bin script to library
-- rename servercli to memex_api
+- ~~rename servercli to memex_api~~

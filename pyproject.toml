@@ -21,7 +21,7 @@ black = "^22.6.0"
 
 [tool.poetry.scripts]
 memex = "bin.cli:main"
-memex-api = "bin.servercli:main"
+memex-api = "bin.memex_api:main"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
