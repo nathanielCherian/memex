@@ -11,16 +11,16 @@
 
 ## Noble Recomended Fixes
 - ~~remove requirements~~
-- Switch testing to tox
+- run testing through tox
     - black
     - isort
     - flake8
     - pylint
+- Make testing run api before starting
 - Enhance README
     - "dev status"
     - installation instructions
 - Find permament location for Database
 - ~~rename .memex to .memexrc~~
-- Make testing run api before starting
-- Move CLI code from bin script to library
+- ~~Move CLI code from bin script to library~~
 - ~~rename servercli to memex_api~~
