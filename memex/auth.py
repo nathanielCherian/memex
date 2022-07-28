@@ -1,8 +1,9 @@
+import hashlib
+import logging
+import uuid
+
 from .main import create_session
 from .models import AuthModel
-import hashlib
-import uuid
-import logging
 
 
 def gen_token(name):

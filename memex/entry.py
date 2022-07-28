@@ -1,9 +1,11 @@
+import logging
+
 from memex.utils import load_module
+
+from .config import read_config
+from .errors import InvalidKeywordException
 from .main import create_session
 from .models import EntryModel
-from .errors import InvalidKeywordException
-from .config import read_config
-import logging
 
 
 def create_entry(entry_dict, options=[]):

@@ -1,10 +1,11 @@
-from sqlalchemy.orm import Session
+import logging
+
 from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
 
 from memex.config import read_config
-from .models import Base
 
-import logging
+from .models import Base
 
 
 def create_session():

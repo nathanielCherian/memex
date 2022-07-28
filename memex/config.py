@@ -1,6 +1,6 @@
+import configparser
 from os.path import expanduser, isfile
 from pathlib import Path
-import configparser
 
 from memex.utils import load_module
 

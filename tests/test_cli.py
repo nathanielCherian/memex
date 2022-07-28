@@ -1,4 +1,4 @@
-from memex.cli_handler import MemexCLI, CLI
+from memex.cli_handler import CLI, MemexCLI
 from tests.utils import remove_db
 
 

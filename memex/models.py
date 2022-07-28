@@ -1,8 +1,10 @@
-from email.policy import default
-from sqlalchemy import Column, Integer, String, DateTime, Boolean
-from sqlalchemy.sql import func
-from sqlalchemy.orm import declarative_base
 from datetime import datetime
+from email.policy import default
+
+from sqlalchemy import Boolean, Column, DateTime, Integer, String
+from sqlalchemy.orm import declarative_base
+from sqlalchemy.sql import func
+
 from .errors import InvalidKeywordException
 
 Base = declarative_base()

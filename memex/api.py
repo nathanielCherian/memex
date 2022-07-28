@@ -1,5 +1,7 @@
 from flask import Flask, request
+
 from memex.config import read_config
+
 from .auth import validate_token
 from .entry import create_entry, save_entry
 from .utils import parse_token

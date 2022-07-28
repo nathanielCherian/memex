@@ -1,12 +1,12 @@
+import sys
 from argparse import ArgumentParser
 from enum import Enum
-import sys
 
-from .entry import create_entry, save_entry, list_entries, find_entry
-from .auth import delete_token, gen_token, get_all_tokens, delete_token
-from .api import start_server
-from .search import search_keywords_and, search_keywords_or
 from . import __version__
+from .api import start_server
+from .auth import delete_token, gen_token, get_all_tokens
+from .entry import create_entry, find_entry, list_entries, save_entry
+from .search import search_keywords_and, search_keywords_or
 
 
 class CLI(Enum):

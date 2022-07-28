@@ -1,15 +1,11 @@
-from memex.search import (
-    search_keywords,
-    search_keywords_and,
-    search_keywords_or,
-    search_url,
-)
-from memex.entry import create_entry
-from memex.main import create_session
+import os
 import random
 import time
-import os
 
+from memex.entry import create_entry
+from memex.main import create_session
+from memex.search import (search_keywords, search_keywords_and,
+                          search_keywords_or, search_url)
 
 dirname = os.path.dirname(__file__)
 nouns_file = os.path.join(dirname, "data/nouns.txt")

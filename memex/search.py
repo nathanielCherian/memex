@@ -1,4 +1,5 @@
-from sqlalchemy import or_, and_
+from sqlalchemy import and_, or_
+
 from memex.main import create_session
 from memex.models import EntryModel
 

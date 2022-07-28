@@ -1,9 +1,11 @@
+import json
+
+import pytest
 from requests.exceptions import ConnectionError
+
+from memex.api import app
 from memex.auth import gen_token
 from memex.config import read_config
-from memex.api import app
-import json
-import pytest
 
 port = read_config()["DEFAULT"]["API_PORT"]
 url = f"http://localhost:{port}/"
