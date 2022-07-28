@@ -1,9 +1,13 @@
 # memex
-Inspired by [Vannevar Bush](https://en.wikipedia.org/wiki/Memex)'s fictional device that would be a digital searchable record of our lives.
 
-Mainly this memex will be able to store and archive pages on the internet so we can recall them quickly.
+Your personal database and archive on everything that is meaningful to you.
 
-NOTE: This project is still in development.
+Quickly find that one gif or blog you saw a month ago through a powerful database search.
+
+The term 'memex' (memory-extension) comes form [Vannevar Bush](https://en.wikipedia.org/wiki/Memex)'s fictional device that would be a *digital searchable record* of our lives.
+
+
+NOTE: This project is pre-alpha, use at your own risk.
 
 ## Installation
 Memex uses the [poetry package manager](https://python-poetry.org/). Please install using the directions from their website before continuing

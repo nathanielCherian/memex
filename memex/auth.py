@@ -4,7 +4,9 @@ import uuid
 
 from .main import create_session
 from .models import AuthModel
+from .errors import handle_error
 
+    
 
 def gen_token(name):
     token = str(uuid.uuid4())
@@ -22,7 +24,7 @@ def find_token(salt):
             session.commit()
         return res
     except Exception as e:
-        print("failed to search for token...", e)
+        handle_error("Failed to find token", e)
     return None
 
 
@@ -40,7 +42,7 @@ def delete_token(id_):
         logging.info(f"Revoked auth token '{name}' ({salt[:5]})")
         return True
     except Exception as e:
-        print("something went wrong...", e)
+        handle_error("Unable to delete token", e)
     return False
 
 
@@ -53,7 +55,7 @@ def validate_token(token, bearer=""):
             f"Authenticated {bearer} with '{search_res.name}' ({search_res.salt[:5]})"
         )
     else:
-        logging.warn(f"Failed to authenticate {bearer}")
+        logging.warning(f"Failed to authenticate {bearer}")
     return validity
 
 
@@ -62,7 +64,7 @@ def get_all_tokens():
         session = create_session()
         return session.query(AuthModel).all()
     except Exception as e:
-        print("failed to get tokens...", e)
+        handle_error('Failed to retrieve tokens', e)
     return []
 
 
@@ -75,7 +77,7 @@ def add_auth_token(name, salt):
 
         logging.info(f"Created new auth token '{name}' ({salt[:5]})")
     except Exception as e:
-        print("failed to add new token", e)
+        handle_error("Failed to add new token.", e)
         return False
     return True
 
@@ -87,8 +89,6 @@ def revoke_token(id_):
         if not res:
             raise Exception("Not found")
         session.commit()
-
         logging.info(f"Revoked auth token '{res.name}' ({res.salt[:5]})")
-
     except Exception as e:
-        print("something went wrong revoking...", e)
+        handle_error("Unable to revoke token",e)

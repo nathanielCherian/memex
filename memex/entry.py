@@ -3,7 +3,7 @@ import logging
 from memex.utils import load_module
 
 from .config import read_config
-from .errors import InvalidKeywordException
+from .errors import InvalidKeywordException, handle_error
 from .main import create_session
 from .models import EntryModel
 
@@ -37,7 +37,7 @@ def create_entry(entry_dict, options=[]):
     except InvalidKeywordException as e:
         print("invalid keywords")
     except Exception as e:
-        print("something went wrong..", e)
+        handle_error("Unable to create entry", e)
     return None
 
 
@@ -52,7 +52,7 @@ def save_entry(entry):
 
         return True
     except Exception as e:
-        print("something went wrong")
+        handle_error("Unable to save entry", e)
         return False
 
 
@@ -61,7 +61,7 @@ def list_entries():
         session = create_session()
         return session.query(EntryModel).all()
     except Exception as e:
-        print("something went wrong...", e)
+        handle_error("Unable to fetch entries", e)
 
 
 def find_entry(id_):
@@ -69,5 +69,5 @@ def find_entry(id_):
         session = create_session()
         return session.query(EntryModel).filter(EntryModel.id == id_).first()
     except Exception as e:
-        print("something went wrong...", e)
+        handle_error("Unable to find entry", e)
     return None
