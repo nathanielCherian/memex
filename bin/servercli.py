@@ -99,6 +99,7 @@ def parse_args(args):
         description="memex API and token authorization",
         formatter_class=RawTextHelpFormatter,
     )
+    parser.add_argument("-v", "--version", action="version", version=__version__)
 
     subparsers = parser.add_subparsers(description="sub-description", dest="command")
 

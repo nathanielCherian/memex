@@ -6,7 +6,21 @@
 - add flags to certain CLI commands
     - ~~search~~
 - black code formatting
-
 - Options/plugins for filing
-
 - ~~create .memex config file~~
+
+## Noble Recomended Fixes
+- remove requirements
+- Switch testing to tox
+    - black
+    - isort
+    - flake8
+    - pylint
+- Enhance README
+    - "dev status"
+    - installation instructions
+- Find permament location for Database
+- rename .memex to .memexrc
+- Make testing run api before starting
+- Move CLI code from bin script to library
+- rename servercli to memex_api

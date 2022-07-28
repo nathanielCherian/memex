@@ -1,4 +1,5 @@
 from memex.entry import create_entry, find_entry, list_entries, save_entry
+from memex import __version__
 from argparse import ArgumentParser, RawTextHelpFormatter
 import sys
 
@@ -22,7 +23,7 @@ class BaseCommand:
 
 class FileCommand(BaseCommand):
     command = "file"
-    description = "file description"
+    description = "Stores a new entry to the database. keywords are space-seperated."
 
     def create_parser(self):
         self.parser.add_argument("url", metavar="url", nargs="?")
@@ -45,7 +46,7 @@ class FileCommand(BaseCommand):
 
 class ListCommand(BaseCommand):
     command = "list"
-    description = "list description"
+    description = "Shows all entrys in the database"
 
     def handle_command(self, parsed_args):
         entries = list_entries()
@@ -58,15 +59,25 @@ class ListCommand(BaseCommand):
 
 class SearchCommand(BaseCommand):
     command = "search"
-    description = "search description"
+    description = "Returns entries that match one or more of the keywords given. Keywords are space-seperated"
 
     def create_parser(self):
         self.parser.add_argument("terms", metavar="terms", nargs="*")
-        self.parser.add_argument(
+        group = self.parser.add_mutually_exclusive_group(required=False)
+        group.add_argument(
             "-i",
+            "--intersection",
             dest="intersection",
             action="store_true",
-            help="Find intersection of search queries",
+            help="Find intersection of search terms",
+        )
+
+        group.add_argument(
+            "-u",
+            "--union",
+            dest="intersection",
+            action="store_false",
+            help="Find union of search terms",
         )
         return
 
@@ -91,7 +102,7 @@ class SearchCommand(BaseCommand):
 
 class InspectCommand(BaseCommand):
     command = "inspect"
-    description = "inspect description"
+    description = "Displays full entry of given id."
 
     def create_parser(self):
         self.parser.add_argument("id", metavar="id", nargs=1, type=int)
@@ -139,6 +150,7 @@ def parse_args(args):
         formatter_class=RawTextHelpFormatter,
     )
 
+    parser.add_argument("-v", "--version", action="version", version=__version__)
     subparsers = parser.add_subparsers(description="sub-description", dest="command")
 
     parsers = [Command(subparsers) for Command in BaseCommand.__subclasses__()]
@@ -151,7 +163,10 @@ def parse_args(args):
             parser.handle_command(parsed_args)
             return
 
-    print()
+    print("Use the memex cli to interact with your database...\n")
+    for Command in BaseCommand.__subclasses__():
+        print(Command.command.ljust(20) + Command.description)
+    print("\nuse the '-h' flag after each command to see usage")
 
     return
 
