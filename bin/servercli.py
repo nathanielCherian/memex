@@ -59,8 +59,8 @@ class RevokeTokenCommand(BaseCommand):
     
     def handle_command(self, parsed_args):
         id_ = parsed_args.id[0]
-        delete_token(id_)
-        print("Successfully revoked token.")
+        status = delete_token(id_)
+        if status: print("Successfully revoked token.")
 
 class StartAPICommand(BaseCommand):
     command = 'start'

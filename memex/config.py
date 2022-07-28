@@ -9,10 +9,12 @@ CONFIG_PATH = expanduser('~')+'/.memex'
 config = configparser.ConfigParser()
 config['DEFAULT'] = {
     'API_PORT':3000,
-    'DB_PATH':'/tmp/memex.db' # not gonna store in tmp
+    'DB_PATH':'/tmp/memex.db', # in produciton not gonna store in tmp
+    'LOG_FILE':'/tmp/memex.log'
 }
 
-config['option-provider'] = {
+# Reserved for plugins
+config['plugins'] = {
 
 }
 

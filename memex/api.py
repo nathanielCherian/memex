@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 def handle_request(req, on_success, on_failure):
     token = parse_token(request)
-    status = validate_token(token)
+    status = validate_token(token, bearer=request.remote_addr)
     if status:
         return on_success(req)
     else:

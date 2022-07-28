@@ -5,6 +5,7 @@
 - ~~enhance CLI~~, more detailed help
 - add flags to certain CLI commands
     - ~~search~~
+- black code formatting
 
 - Options/plugins for filing
 

@@ -3,6 +3,7 @@ from .main import create_session
 from .models import EntryModel
 from .errors import InvalidKeywordException
 from .config import read_config
+import logging
 
 def create_entry(entry_dict, options=[]):
     try:
@@ -41,6 +42,10 @@ def save_entry(entry):
         session = create_session()
         session.add(entry)
         session.commit()
+
+        session.refresh(entry)
+        logging.info(f"Saved entry to database [{entry.id}]")
+        
         return True
     except Exception as e:
         print("something went wrong")

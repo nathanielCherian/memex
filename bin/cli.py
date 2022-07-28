@@ -1,9 +1,6 @@
-import argparse
-from pydoc import describe
 from memex.entry import create_entry, find_entry, list_entries, save_entry
 from argparse import ArgumentParser, RawTextHelpFormatter
 import sys
-import csv
 
 from memex.search import search_keywords_and, search_keywords_or
 
