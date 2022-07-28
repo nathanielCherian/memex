@@ -16,7 +16,7 @@
     - isort
     - flake8
     - pylint
-- Make testing run api before starting
+- ~~Make testing run api before starting~~
 - Enhance README
     - "dev status"
     - installation instructions

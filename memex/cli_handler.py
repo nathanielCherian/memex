@@ -13,6 +13,7 @@ class CLI(Enum):
     MEMEX = 1
     MEMEX_API = 2
 
+
 class BaseCommand:
     def __init__(self, subparsers) -> None:
         self.register_parser(subparsers)
@@ -31,14 +32,17 @@ class BaseCommand:
     def match(command):
         return
 
+
 class MemexCommand(BaseCommand):
     pass
+
 
 class MemexAPICommand(BaseCommand):
     pass
 
 
 # commands for MEMEX
+
 
 class FileCommand(MemexCommand):
     command = "file"
@@ -147,7 +151,6 @@ class ExportCommand(MemexCommand):
         print("\n".join(es))
 
 
-
 # Commands for MEMEX API
 class CreateTokenCommand(MemexAPICommand):
     command = "create"
@@ -209,20 +212,23 @@ class StartAPICommand(MemexAPICommand):
         start_server()
 
 
-
-class MemexCLI():
+class MemexCLI:
     def __init__(self, cli, args=[]) -> None:
         if not args:
             args = sys.argv[1:]
 
-        description = 'memex cli to interact with your database' if cli == CLI.MEMEX else 'memex API and token authorization'
-        parser = ArgumentParser(
-            description=description
+        description = (
+            "memex cli to interact with your database"
+            if cli == CLI.MEMEX
+            else "memex API and token authorization"
         )
+        parser = ArgumentParser(description=description)
 
         parser.add_argument("-v", "--version", action="version", version=__version__)
-        subparsers = parser.add_subparsers(description="sub-description", dest="command")
-        
+        subparsers = parser.add_subparsers(
+            description="sub-description", dest="command"
+        )
+
         CLICommand = MemexCommand if cli == CLI.MEMEX else MemexAPICommand
 
         Commands = CLICommand.__subclasses__()
@@ -236,11 +242,7 @@ class MemexCLI():
                 parser.handle_command(parsed_args)
                 return
 
-        print(description+'\n')
+        print(description + "\n")
         for Command in CLICommand.__subclasses__():
             print(Command.command.ljust(20) + Command.description)
         print("\nuse the '-h' flag after each command to see usage")
-        
-
-
-

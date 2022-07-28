@@ -11,11 +11,11 @@ headers = {"content-type": "application/json"}
 
 client = app.test_client()
 
+
 def post_request(path, token, payload={}):
     headers["memex-token"] = token
-    res_text = client.post(path,json=payload, headers=headers)
+    res_text = client.post(path, json=payload, headers=headers)
     return json.loads(res_text.data)
-
 
 
 @pytest.fixture
@@ -23,9 +23,10 @@ def token():
     token = gen_token("foo")
     return token
 
+
 def test_token(token):
-    res = post_request('test-token', token)
-    assert res['status'] == True
+    res = post_request("test-token", token)
+    assert res["status"] == True
 
 
 def test_create(token):
@@ -33,5 +34,5 @@ def test_create(token):
         "url": "http://example.com",
         "keywords": "test, test2",
     }
-    res = post_request('/', token, payload=obj)
+    res = post_request("/", token, payload=obj)
     assert res["url"] == obj["url"] and res["keywords"] == "test, test2"

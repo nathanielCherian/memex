@@ -1,7 +1,9 @@
 from memex.cli_handler import MemexCLI, CLI
 
+
 def main():
     MemexCLI(CLI.MEMEX_API)
+
 
 # # createtoken.usage = 'create <token-name>'
 # # listtokens.usage = 'list'

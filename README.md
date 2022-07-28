@@ -54,9 +54,8 @@ Plugins...
 
 
 ## Testing
-Tests include both memex and the memex-api. Make sure the api is active before running tests.
 
-```$ poetry run pytest ```
+```$ poetry tox ```
 
 ## Philosophy
 - Lightweight

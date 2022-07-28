@@ -1,8 +1,9 @@
 from memex.cli_handler import MemexCLI, CLI
 
+
 def main():
     MemexCLI(CLI.MEMEX)
-    
+
 
 # # file_.usage = 'file <url?> <keywords?>', 'Stores a new entry to the database. keywords are space-seperated.'
 # # list_.usage = 'list', 'Shows all entrys in the database'

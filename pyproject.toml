@@ -18,6 +18,7 @@ requests = "^2.28.1"
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.2"
 tox = "^3.25.1"
+black = "^22.6.0"
 
 [tool.poetry.scripts]
 memex = "bin.memex:main"
