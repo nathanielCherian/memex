@@ -11,11 +11,11 @@
 
 ## Noble Recomended Fixes
 - ~~remove requirements~~
-- run testing through tox
-    - black
-    - isort
-    - flake8
-    - pylint
+- ~~run testing through tox~~
+    - ~~black~~
+    - ~~isort~~
+    - *flake8*
+    - *pylint*
 - ~~Make testing run api before starting~~
 - Enhance README
     - "dev status"
