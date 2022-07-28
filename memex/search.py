@@ -2,16 +2,23 @@ from sqlalchemy import or_, and_
 from memex.main import create_session
 from memex.models import EntryModel
 
+
 def search_keywords_or(keywords):
     return search_keywords(or_, keywords)
+
 
 def search_keywords_and(keywords):
     return search_keywords(and_, keywords)
 
+
 def search_keywords(func, keywords):
     try:
         session = create_session()
-        e = session.query(EntryModel).filter(func(*[EntryModel.keywords.contains(k) for k in keywords])).all()
+        e = (
+            session.query(EntryModel)
+            .filter(func(*[EntryModel.keywords.contains(k) for k in keywords]))
+            .all()
+        )
         return e
     except Exception as e:
         print("unable to search...", e)
@@ -25,4 +32,3 @@ def search_url(substr):
         return e
     except Exception as e:
         print("unable to search...", e)
-

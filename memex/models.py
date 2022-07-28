@@ -7,6 +7,7 @@ from .errors import InvalidKeywordException
 
 Base = declarative_base()
 
+
 class AuthModel(Base):
     __tablename__ = "auth"
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -20,7 +21,9 @@ class AuthModel(Base):
         self.salt = salt
 
     def __repr__(self):
-        return f'<{self.__tablename__} id={self.id} name={self.name} salt={self.salt[:5]}>'
+        return (
+            f"<{self.__tablename__} id={self.id} name={self.name} salt={self.salt[:5]}>"
+        )
 
     def get_name(self):
         return self.name
@@ -36,25 +39,25 @@ class EntryModel(Base):
     keywords = Column(String(200))
     time_created = Column(DateTime(timezone=True), server_default=func.now())
     time_updated = Column(DateTime(timezone=True), onupdate=func.now())
-    
+
     def __init__(self, url, keywords):
         self.url = url
         if type(keywords) == str:
-            keywords = keywords.split(',')
-        if ','.join(keywords).split(',') != keywords: raise InvalidKeywordException()
-        self.keywords = ','.join(keywords)
-    
+            keywords = keywords.split(",")
+        if ",".join(keywords).split(",") != keywords:
+            raise InvalidKeywordException()
+        self.keywords = ",".join(keywords)
+
     def __repr__(self):
-        return f'<Entry id={self.id} url={self.url[:5]} keywords={self.keywords} time_created={self.time_created} time_updated={self.time_updated}>'
-    
+        return f"<Entry id={self.id} url={self.url[:5]} keywords={self.keywords} time_created={self.time_created} time_updated={self.time_updated}>"
+
     @staticmethod
     def csv_headers():
-        return 'id, url, keywords, time_created, time_updated'
+        return "id, url, keywords, time_created, time_updated"
 
     def to_csv(self):
         return f'{self.id}, "{self.url}", "{self.keywords}", "{self.time_created}", {self.time_updated}'
 
     def as_dict(self):
-        l = ['id', 'url', 'keywords']
-        return {k:self.__dict__[k] for k in l}
-
+        l = ["id", "url", "keywords"]
+        return {k: self.__dict__[k] for k in l}

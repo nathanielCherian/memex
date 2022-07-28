@@ -5,6 +5,7 @@ from .errors import InvalidKeywordException
 from .config import read_config
 import logging
 
+
 def create_entry(entry_dict, options=[]):
     try:
 
@@ -28,14 +29,15 @@ def create_entry(entry_dict, options=[]):
         #     option_handler = load_module(option_handler_file)
         #     entry_dict = option_handler(entry_dict)
 
-        attribs = ['url', 'keywords']
-        kwargs = {k:entry_dict[k] for k in attribs}
+        attribs = ["url", "keywords"]
+        kwargs = {k: entry_dict[k] for k in attribs}
         return EntryModel(**kwargs)
     except InvalidKeywordException as e:
         print("invalid keywords")
     except Exception as e:
         print("something went wrong..", e)
     return None
+
 
 def save_entry(entry):
     try:
@@ -45,11 +47,12 @@ def save_entry(entry):
 
         session.refresh(entry)
         logging.info(f"Saved entry to database [{entry.id}]")
-        
+
         return True
     except Exception as e:
         print("something went wrong")
         return False
+
 
 def list_entries():
     try:
@@ -57,6 +60,7 @@ def list_entries():
         return session.query(EntryModel).all()
     except Exception as e:
         print("something went wrong...", e)
+
 
 def find_entry(id_):
     try:

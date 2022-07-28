@@ -1,8 +1,10 @@
 import importlib.util
 import sys
 
+
 def parse_token(request):
-    return request.headers.get('memex-token', '')
+    return request.headers.get("memex-token", "")
+
 
 # In format /foo/bar/file.py
 def load_module(path):
