@@ -17,6 +17,7 @@ client = app.test_client()
 def post_request(path, token, payload={}):
     headers["memex-token"] = token
     res_text = client.post(path, json=payload, headers=headers)
+    print(res_text)
     return json.loads(res_text.data)
 
 
@@ -39,10 +40,8 @@ def test_create(token):
     res = post_request("/", token, payload=obj)
     assert res["url"] == obj["url"] and res["keywords"] == "test, test2"
 
+
 def test_search(token):
-    obj = {
-        'operation':'or',
-        'terms':['test']
-    }
+    obj = {"operation": "or", "terms": ["test"]}
     res = post_request("/search", token, payload=obj)
-    assert type(res['entries']) == list
+    assert type(res["entries"]) == list

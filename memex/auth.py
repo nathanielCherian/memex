@@ -2,11 +2,10 @@ import hashlib
 import logging
 import uuid
 
+from .errors import handle_error
 from .main import create_session
 from .models import AuthModel
-from .errors import handle_error
 
-    
 
 def gen_token(name):
     token = str(uuid.uuid4())
@@ -64,7 +63,7 @@ def get_all_tokens():
         session = create_session()
         return session.query(AuthModel).all()
     except Exception as e:
-        handle_error('Failed to retrieve tokens', e)
+        handle_error("Failed to retrieve tokens", e)
     return []
 
 
@@ -91,4 +90,4 @@ def revoke_token(id_):
         session.commit()
         logging.info(f"Revoked auth token '{res.name}' ({res.salt[:5]})")
     except Exception as e:
-        handle_error("Unable to revoke token",e)
+        handle_error("Unable to revoke token", e)
