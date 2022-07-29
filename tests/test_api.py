@@ -38,3 +38,11 @@ def test_create(token):
     }
     res = post_request("/", token, payload=obj)
     assert res["url"] == obj["url"] and res["keywords"] == "test, test2"
+
+def test_search(token):
+    obj = {
+        'operation':'or',
+        'terms':['test']
+    }
+    res = post_request("/search", token, payload=obj)
+    assert type(res['entries']) == list
