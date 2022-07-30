@@ -3,11 +3,13 @@ from sqlalchemy import and_, or_
 from memex.main import create_session
 from memex.models import EntryModel
 
-# Extend PowerSearch in the future, it will be the selling point of memex
-# Fast, Simple, Powerful
-
 
 class PowerSearch:
+    # Extend PowerSearch in the future, it will be the selling point of memex
+    # Fast, Simple, Powerful
+    # Eventually, I might move away from the ORM and have the SQL builder be here
+    # ^ but maybe not
+    
     def __init__(self, terms, operation="or", fields=["keywords"]):
         self.terms = terms
         self.operation = operation

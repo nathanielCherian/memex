@@ -19,7 +19,7 @@ def create_session():
         filename=log_file,
         level=logging.INFO,
         format="%(asctime)s: (%(levelname)s) %(message)s",
-        datefmt="%d/%m/%Y %I:%M:%S",
+        datefmt="%m/%d/%Y %I:%M:%S",
     )
 
     engine = create_engine("sqlite:///" + dbpath, echo=False, future=True)
@@ -29,8 +29,8 @@ def create_session():
     return session
 
 
-def exec_command(command):
-    engine = create_engine("sqlite:///example.db")
-    with engine.connect() as con:
-        rs = con.execute(command)
-        return list(rs)
+# def exec_command(command):
+#     engine = create_engine("sqlite:///example.db")
+#     with engine.connect() as con:
+#         rs = con.execute(command)
+#         return list(rs)

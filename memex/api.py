@@ -7,7 +7,7 @@ from memex.config import read_config
 from memex.search import PowerSearch, search_keywords_and, search_keywords_or
 
 from .auth import validate_token
-from .entry import create_entry, save_entry
+from .entry import create_entry, find_entry, save_entry
 from .utils import parse_token
 
 app = Flask(__name__)
@@ -78,9 +78,26 @@ def search():
     return
 
 
-@app.route("/inspect", methods=["GET"])
+@app.route("/inspect", methods=["POST"])
 def inspect():
-    return "Nope", 404
+    def success(req):
+        try:
+            req_json = req.json
+            id_ = req_json['id']
+            entry = find_entry(id_)
+            if entry is None:
+                return "bad parameters", 400
+            return json.dumps({
+                "entry":entry.as_dict()
+            })
+        except Exception as e:
+            return str(e), 500
+    def failure(req):
+        return "Unauthorized", 401
+
+    if request.method == 'POST':
+        return handle_request(request, success, failure)
+    return 
 
 
 @app.route("/test-token", methods=["POST"])
