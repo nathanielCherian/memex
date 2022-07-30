@@ -9,7 +9,7 @@ class PowerSearch:
     # Fast, Simple, Powerful
     # Eventually, I might move away from the ORM and have the SQL builder be here
     # ^ but maybe not
-    
+
     def __init__(self, terms, operation="or", fields=["keywords"]):
         self.terms = terms
         self.operation = operation

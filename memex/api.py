@@ -4,7 +4,7 @@ import logging
 from flask import Flask, request
 
 from memex.config import read_config
-from memex.search import PowerSearch, search_keywords_and, search_keywords_or
+from memex.search import PowerSearch
 
 from .auth import validate_token
 from .entry import create_entry, find_entry, save_entry
@@ -13,7 +13,7 @@ from .utils import parse_token
 app = Flask(__name__)
 
 
-def handle_request(req, on_success, on_failure):
+def handle_request(req, on_success, on_failure=lambda: ("Unauthorized", 401)):
     token = parse_token(request)
     status = validate_token(token, bearer=request.remote_addr)
     if status:
@@ -35,12 +35,8 @@ def index():
             return "Unable to save entry", 500
         return entry.as_dict()
 
-    def failure():
-        print("failed to authenticate token")
-        return "Unauthorized", 401
-
     if request.method == "POST":
-        return handle_request(request, success, failure)
+        return handle_request(request, success)
 
     return
 
@@ -68,12 +64,8 @@ def search():
             return str(e), 500
         return
 
-    def failure():
-        print("failed to authenticate token")
-        return "Unauthorized", 401
-
     if request.method == "POST":
-        return handle_request(request, success, failure)
+        return handle_request(request, success)
 
     return
 
@@ -83,21 +75,17 @@ def inspect():
     def success(req):
         try:
             req_json = req.json
-            id_ = req_json['id']
+            id_ = req_json["id"]
             entry = find_entry(id_)
             if entry is None:
                 return "bad parameters", 400
-            return json.dumps({
-                "entry":entry.as_dict()
-            })
+            return json.dumps({"entry": entry.as_dict()})
         except Exception as e:
             return str(e), 500
-    def failure(req):
-        return "Unauthorized", 401
 
-    if request.method == 'POST':
-        return handle_request(request, success, failure)
-    return 
+    if request.method == "POST":
+        return handle_request(request, success)
+    return
 
 
 @app.route("/test-token", methods=["POST"])
@@ -109,7 +97,7 @@ def test():
         return {"status": False}
 
     if request.method == "POST":
-        return handle_request(request, suc, fail)
+        return handle_request(request, suc, on_failure=fail)
     return
 
 

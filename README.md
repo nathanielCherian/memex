@@ -1,5 +1,7 @@
 # memex
 
+<a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
+
 Your personal database and archive on everything that is meaningful to you.
 
 Quickly find that one gif or blog you saw a month ago through a powerful database search.
