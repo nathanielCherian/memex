@@ -10,6 +10,7 @@ class ConfigOption(Enum):
     API_PORT = 'API_PORT'
     DB_PATH = 'DB_PATH'
     LOG_FILE = 'LOG_FILE'
+    REMOTE = 'REMOTE'
 
 
 class MemexConfig:

@@ -1,3 +1,4 @@
+from calendar import c
 import sys
 from argparse import ArgumentParser
 from enum import Enum
@@ -7,12 +8,11 @@ from .api import start_server
 from .auth import delete_token, gen_token, get_all_tokens
 from .entry import create_entry, find_entry, list_entries, save_entry
 from .search import search_keywords_and, search_keywords_or
-
+from .config import MemexConfig, ConfigOption, ConfigSection
 
 class CLI(Enum):
     MEMEX = 1
     MEMEX_API = 2
-
 
 class BaseCommand:
     def __init__(self, subparsers) -> None:
@@ -24,6 +24,9 @@ class BaseCommand:
 
     def create_parser(self):
         return
+
+    def get_args(self, parsed_args):
+        return {}
 
     def handle_command(self, parsed_args):
         return
@@ -40,6 +43,18 @@ class MemexCommand(BaseCommand):
 class MemexAPICommand(BaseCommand):
     pass
 
+def remote(func):
+    mc = MemexConfig()
+    # remote_url = 
+    def remote_check(*args, **kwargs):
+        command = args[0]
+        print(command)
+        parsed_args = args[1]
+        command_args = command.get_args(parsed_args)    
+        print(command_args)
+    return func
+    return remote_check # implement this in a sec
+
 
 # commands for MEMEX
 
@@ -52,24 +67,33 @@ class FileCommand(MemexCommand):
         self.parser.add_argument("keywords", metavar="keywords", nargs="*")
         return
 
+    @remote
     def handle_command(self, parsed_args):
+        args = self.get_args(parsed_args)
+        entry = create_entry({"url": args['url'], "keywords": args['keywords']})
+        status = save_entry(entry)
+        print("Saved entry successfully!") if status else print(
+            "Failed to save entry..."
+        )
+
+    def get_args(self, parsed_args):
         url = parsed_args.url if parsed_args.url else input("URL of website to store: ")
         keywords = (
             parsed_args.keywords
             if parsed_args.keywords
             else input("Enter keywords (comma seperated): ").split(",")
         )
-        entry = create_entry({"url": url, "keywords": keywords})
-        status = save_entry(entry)
-        print("Saved entry successfully!") if status else print(
-            "Failed to save entry..."
-        )
+        return {
+            "url":url,
+            "keywords":keywords
+        }
 
 
 class ListCommand(MemexCommand):
     command = "list"
     description = "Shows all entrys in the database"
 
+    @remote
     def handle_command(self, parsed_args):
         entries = list_entries()
         print(f"showing {len(entries)} entries")
@@ -103,13 +127,21 @@ class SearchCommand(MemexCommand):
         )
         return
 
-    def handle_command(self, parsed_args):
+    def get_args(self, parsed_args):
         terms = parsed_args.terms
-        intersection = parsed_args.intersection
-        print(intersection)
         if len(terms) < 1:
             print("No search queries provided.")
-            return
+            raise Exception("No search queries provided")
+        return {
+            'terms':terms,
+            'intersection':parsed_args.intersection
+        }
+
+    @remote
+    def handle_command(self, parsed_args):
+        args = self.get_args(parsed_args)
+        terms = args['terms']
+        intersection = args['intersection']
 
         entries = (
             search_keywords_and(terms) if intersection else search_keywords_or(terms)
@@ -129,8 +161,14 @@ class InspectCommand(MemexCommand):
     def create_parser(self):
         self.parser.add_argument("id", metavar="id", nargs=1, type=int)
 
+    def get_args(self, parsed_args):
+        return {
+            'id':parsed_args.id[0]
+        }
+
+    @remote
     def handle_command(self, parsed_args):
-        id_ = parsed_args.id[0]
+        id_ = self.get_args(parsed_args)['id']
         entry = find_entry(id_)
         if entry is None:
             print("That entry does not exist.")
@@ -144,6 +182,7 @@ class ExportCommand(MemexCommand):
     command = "export"
     description = "exports all entries to csv format"
 
+    @remote
     def handle_command(self, parsed_args):
         entries = list_entries()
         es = map(lambda e: e.to_csv(), entries)
@@ -155,7 +194,7 @@ class SetRemoteCommand(MemexCommand):
     description = "set remote memex API endpoint. Leave blank to turn off"
 
     def create_parser(self):
-        self.parser.add_argument("endpoint", metavar='endpoint', nargs='?', default='', type=str)
+            self.parser.add_argument("endpoint", metavar='endpoint', nargs='?', default='', type=str)
 
     def handle_command(self, parsed_args):
         endpoint = parsed_args.endpoint
@@ -163,6 +202,8 @@ class SetRemoteCommand(MemexCommand):
             print("Removed API remote, switched to local storage.")
         else:
             print(f"Switched API remote to {endpoint}.")
+        mc = MemexConfig()
+        mc.set(ConfigSection.DEFAULT, ConfigOption.REMOTE, endpoint)
         print("Try running 'memex list' to test new storage option")
 
 # Commands for MEMEX API
