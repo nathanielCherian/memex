@@ -2,7 +2,6 @@ import logging
 
 from memex.utils import load_module
 
-from .config import read_config
 from .errors import InvalidKeywordException, handle_error
 from .main import create_session
 from .models import EntryModel

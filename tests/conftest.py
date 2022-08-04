@@ -1,10 +1,11 @@
 import os
 
-from memex.config import read_config
+from memex.config import ConfigOption, ConfigSection, MemexConfig
 
 
 def pytest_configure():
-    dbpath = read_config()["DEFAULT"]["DB_PATH"]
+    mc = MemexConfig()
+    dbpath = mc.get(ConfigSection.DEFAULT, ConfigOption.DB_PATH)
     if os.path.exists(dbpath):
         os.remove(dbpath)
         print("Removed database.")

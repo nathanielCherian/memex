@@ -3,7 +3,7 @@ import logging
 
 from flask import Flask, request
 
-from memex.config import read_config
+from memex.config import ConfigOption, ConfigSection, MemexConfig
 from memex.search import PowerSearch
 
 from .auth import validate_token
@@ -102,8 +102,9 @@ def test():
 
 
 def start_server():
-    conf = read_config()
-    app.run(debug=True, port=conf["DEFAULT"]["API_PORT"])
+    mc = MemexConfig()
+    port = mc.get(ConfigSection.DEFAULT, ConfigOption.API_PORT)
+    app.run(debug=True, port=port)
 
 
 if __name__ == "__main__":

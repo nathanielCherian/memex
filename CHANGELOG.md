@@ -9,3 +9,8 @@
 - Utilize flask 'test_client' to test api without running it
 - Code formatting through tox
 - Rename config file to .memexrc from .memex
+
+## v0.3.0
+- Introduce 'set-remote' command
+    - Implement remote commands through API
+- Class structure for config file

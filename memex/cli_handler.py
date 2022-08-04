@@ -43,7 +43,6 @@ class MemexAPICommand(BaseCommand):
 
 # commands for MEMEX
 
-
 class FileCommand(MemexCommand):
     command = "file"
     description = "Stores a new entry to the database. keywords are space-seperated."
@@ -143,13 +142,28 @@ class InspectCommand(MemexCommand):
 
 class ExportCommand(MemexCommand):
     command = "export"
-    description = "export command"
+    description = "exports all entries to csv format"
 
     def handle_command(self, parsed_args):
         entries = list_entries()
         es = map(lambda e: e.to_csv(), entries)
         print("\n".join(es))
 
+
+class SetRemoteCommand(MemexCommand):
+    command = "set-remote"
+    description = "set remote memex API endpoint. Leave blank to turn off"
+
+    def create_parser(self):
+        self.parser.add_argument("endpoint", metavar='endpoint', nargs='?', default='', type=str)
+
+    def handle_command(self, parsed_args):
+        endpoint = parsed_args.endpoint
+        if endpoint == '':
+            print("Removed API remote, switched to local storage.")
+        else:
+            print(f"Switched API remote to {endpoint}.")
+        print("Try running 'memex list' to test new storage option")
 
 # Commands for MEMEX API
 class CreateTokenCommand(MemexAPICommand):
@@ -211,6 +225,9 @@ class StartAPICommand(MemexAPICommand):
     def handle_command(self, parsed_args):
         start_server()
 
+
+
+# Final memex cli class
 
 class MemexCLI:
     def __init__(self, cli, args=[]) -> None:

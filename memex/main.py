@@ -3,18 +3,19 @@ import logging
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
-from memex.config import read_config
+from memex.config import ConfigOption, ConfigSection, MemexConfig
 
 from .models import Base
 
 
 def create_session():
     # READ CONF
-    conf = read_config()
-    dbpath = conf["DEFAULT"]["db_path"]
+
+    mc = MemexConfig()
+    dbpath = mc.get(ConfigSection.DEFAULT, ConfigOption.DB_PATH)
 
     # Create logger
-    log_file = conf["DEFAULT"]["log_file"]
+    log_file = mc.get(ConfigSection.DEFAULT, ConfigOption.LOG_FILE)
     logging.basicConfig(
         filename=log_file,
         level=logging.INFO,
