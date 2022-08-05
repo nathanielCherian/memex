@@ -2,6 +2,7 @@ from calendar import c
 import sys
 from argparse import ArgumentParser
 from enum import Enum
+from memex.models import EntryModel
 
 from memex.remote import MemexRemote
 
@@ -28,9 +29,6 @@ class BaseCommand:
         return
 
     def get_args(self, parsed_args):
-        return {}
-
-    def get_model(self, args):
         return {}
     
     def display(self, model):
@@ -142,7 +140,8 @@ class SearchCommand(MemexCommand):
             "-i",
             "--intersection",
             dest="intersection",
-            action="store_true",
+            const='and',
+            nargs='?',
             help="Find intersection of search terms",
         )
 
@@ -150,7 +149,8 @@ class SearchCommand(MemexCommand):
             "-u",
             "--union",
             dest="intersection",
-            action="store_false",
+            const='or',
+            nargs='?',
             help="Find union of search terms",
         )
         return
@@ -162,22 +162,27 @@ class SearchCommand(MemexCommand):
             exit()
         return {
             'terms':terms,
-            'intersection':parsed_args.intersection
+            'operation':parsed_args.intersection,
+            'fields':['keywords']
         }
 
+    def display(self, model):
+        entries = model['entries']
+        print(f"found {len(entries)} entries")
+        r = lambda e: str(e['id']).ljust(4) + e['url'].ljust(19) + " " + str(e['keywords'])
+        entry_strs = list(map(r, entries))
+        print("\n".join(entry_strs))
+        return
+
+    @remote
     def handle_command(self, parsed_args):
         args = self.get_args(parsed_args)
         terms = args['terms']
-        intersection = args['intersection']
-
+        operation = args['operation']
         entries = (
-            search_keywords_and(terms) if intersection else search_keywords_or(terms)
+            search_keywords_and(terms) if operation == 'and' else search_keywords_or(terms)
         )
-
-        print(f"Found {len(entries)} entries...")
-        r = lambda e: str(e.id).ljust(4) + e.url.ljust(19) + " " + str(e.keywords)
-        entry_strs = list(map(r, entries))
-        print("\n".join(entry_strs))
+        self.display(entries)
         return
 
 
@@ -214,10 +219,16 @@ class ExportCommand(MemexCommand):
     command = "export"
     description = "exports all entries to csv format"
 
+    def display(self, model):
+        entries = model['entries']
+        es = map(lambda e: EntryModel.dict_csv(e), entries)
+        print("\n".join(es))
+        return
+
+    @remote
     def handle_command(self, parsed_args):
         entries = list_entries()
-        es = map(lambda e: e.to_csv(), entries)
-        print("\n".join(es))
+        self.display({'entries':[entry.as_dict() for entry in entries]})
 
 
 class SetRemoteCommand(MemexCommand):
@@ -241,6 +252,8 @@ class SetRemoteCommand(MemexCommand):
         mc.set(ConfigSection.DEFAULT, ConfigOption.TOKEN, token)
 
         print("Try running 'memex list' to test new storage option")
+
+
 
 # Commands for MEMEX API
 class CreateTokenCommand(MemexAPICommand):

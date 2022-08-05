@@ -57,6 +57,10 @@ class EntryModel(Base):
     def csv_headers():
         return "id, url, keywords, time_created, time_updated"
 
+    @staticmethod
+    def dict_csv(dict):
+        return f'{dict["id"]}, "{dict["url"]}", "{dict["keywords"]}", "{dict["time_created"]}", {dict["time_updated"]}'
+
     def to_csv(self):
         return f'{self.id}, "{self.url}", "{self.keywords}", "{self.time_created}", {self.time_updated}'
 

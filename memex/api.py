@@ -49,7 +49,7 @@ def search():
             req_json = req.json
             terms = req_json["terms"]
             operation = req_json["operation"]
-            fields = ["keywords"]
+            fields = req_json["fields"]
 
             entries = PowerSearch(terms, operation, fields).execute()
             # entries = search_keywords_and(terms) if operation == 'and' else search_keywords_or(terms)
