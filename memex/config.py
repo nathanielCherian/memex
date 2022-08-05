@@ -1,17 +1,19 @@
 import configparser
+from enum import Enum
 from os.path import expanduser, isfile
 from pathlib import Path
-from enum import Enum
+
 
 class ConfigSection(Enum):
     DEFAULT = "DEFAULT"
 
+
 class ConfigOption(Enum):
-    API_PORT = 'API_PORT'
-    DB_PATH = 'DB_PATH'
-    LOG_FILE = 'LOG_FILE'
-    REMOTE = 'REMOTE'
-    TOKEN = 'TOKEN'
+    API_PORT = "API_PORT"
+    DB_PATH = "DB_PATH"
+    LOG_FILE = "LOG_FILE"
+    REMOTE = "REMOTE"
+    TOKEN = "TOKEN"
 
 
 class MemexConfig:
@@ -35,7 +37,7 @@ class MemexConfig:
         return parser
 
     def write(self):
-        with open(self.CONFIG_PATH, 'w') as conf_file:
+        with open(self.CONFIG_PATH, "w") as conf_file:
             self.parser.write(conf_file)
             return
 

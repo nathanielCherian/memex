@@ -1,10 +1,11 @@
-from ast import parse
-import requests
-import urllib.parse
 import json
+import urllib.parse
+from ast import parse
+
+import requests
+
 
 class MemexRemote:
-
     def __init__(self, url, token):
         self.endpoint = url
         self.token = token
@@ -13,7 +14,7 @@ class MemexRemote:
         pass
 
     def make_request(self, url, payload):
-        headers = {"content-type": "application/json", 'memex-token':self.token}
+        headers = {"content-type": "application/json", "memex-token": self.token}
         return requests.post(url, json=payload, headers=headers)
 
     def execute(self, path, args):
@@ -34,9 +35,8 @@ class MemexRemote:
         return json_res
 
 
-
 if __name__ == "__main__":
-    mr = MemexRemote('http://localhost:3000', 'd8e3dec6-47fe-4280-8855-b5ad8c174b7c')
-    mr.execute('test-token', {})
+    mr = MemexRemote("http://localhost:3000", "d8e3dec6-47fe-4280-8855-b5ad8c174b7c")
+    mr.execute("test-token", {})
     # x = mr.make_request(mr.url, mr.token)
     # print(x.status_code, x.content)

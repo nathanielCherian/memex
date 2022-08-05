@@ -22,8 +22,8 @@ def handle_request(req, on_success, on_failure=lambda: ("Unauthorized", 401)):
         return on_failure()
 
 
-@app.route("/",  methods=["POST"])
-@app.route("/file",  methods=["POST"])
+@app.route("/", methods=["POST"])
+@app.route("/file", methods=["POST"])
 def index():
     def success(req):
         req_json = req.json
@@ -70,8 +70,9 @@ def search():
 
     return
 
-@app.route('/list', methods=['POST'])
-@app.route('/export', methods=['POST'])
+
+@app.route("/list", methods=["POST"])
+@app.route("/export", methods=["POST"])
 def list_():
     def success(req):
         try:

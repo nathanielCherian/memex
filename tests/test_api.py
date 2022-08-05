@@ -6,7 +6,6 @@ from requests.exceptions import ConnectionError
 from memex.api import app
 from memex.auth import gen_token
 
-
 headers = {"content-type": "application/json"}
 
 client = app.test_client()
@@ -46,6 +45,6 @@ def test_inspect(token):
 
 
 def test_search(token):
-    obj = {"operation": "or", "terms": ["test"], 'fields':['keywords']}
+    obj = {"operation": "or", "terms": ["test"], "fields": ["keywords"]}
     res = post_request("/search", token, payload=obj)
     assert type(res["entries"]) == list
