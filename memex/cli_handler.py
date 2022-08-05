@@ -10,7 +10,7 @@ from . import __version__
 from .api import start_server
 from .auth import delete_token, gen_token, get_all_tokens
 from .entry import create_entry, find_entry, list_entries, save_entry
-from .search import search_keywords_and, search_keywords_or
+from .search import PowerSearch
 from .config import MemexConfig, ConfigOption, ConfigSection
 
 class CLI(Enum):
@@ -179,10 +179,11 @@ class SearchCommand(MemexCommand):
         args = self.get_args(parsed_args)
         terms = args['terms']
         operation = args['operation']
-        entries = (
-            search_keywords_and(terms) if operation == 'and' else search_keywords_or(terms)
-        )
-        self.display(entries)
+        fields = args['fields']
+
+        entries = PowerSearch(terms, operation, fields).execute()
+
+        self.display({'entries':[entry.as_dict() for entry in entries]})
         return
 
 

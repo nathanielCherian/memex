@@ -46,6 +46,6 @@ def test_inspect(token):
 
 
 def test_search(token):
-    obj = {"operation": "or", "terms": ["test"]}
+    obj = {"operation": "or", "terms": ["test"], 'fields':['keywords']}
     res = post_request("/search", token, payload=obj)
     assert type(res["entries"]) == list
