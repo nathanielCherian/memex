@@ -11,6 +11,7 @@ class ConfigOption(Enum):
     DB_PATH = 'DB_PATH'
     LOG_FILE = 'LOG_FILE'
     REMOTE = 'REMOTE'
+    TOKEN = 'TOKEN'
 
 
 class MemexConfig:

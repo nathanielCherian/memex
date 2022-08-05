@@ -61,5 +61,12 @@ class EntryModel(Base):
         return f'{self.id}, "{self.url}", "{self.keywords}", "{self.time_created}", {self.time_updated}'
 
     def as_dict(self):
-        l = ["id", "url", "keywords"]
-        return {k: self.__dict__[k] for k in l}
+        return {
+            'id':self.id,
+            'url':self.url,
+            'keywords':self.keywords,
+            'time_created':str(self.time_created),
+            'time_updated':str(self.time_updated),
+        }
+        # l = ["id", "url", "keywords"]
+        # return {k: self.__dict__[k] for k in l}

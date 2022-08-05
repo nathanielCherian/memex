@@ -7,7 +7,7 @@ from memex.config import ConfigOption, ConfigSection, MemexConfig
 from memex.search import PowerSearch
 
 from .auth import validate_token
-from .entry import create_entry, find_entry, save_entry
+from .entry import create_entry, find_entry, list_entries, save_entry
 from .utils import parse_token
 
 app = Flask(__name__)
@@ -22,7 +22,8 @@ def handle_request(req, on_success, on_failure=lambda: ("Unauthorized", 401)):
         return on_failure()
 
 
-@app.route("/", methods=["POST"])
+@app.route("/",  methods=["POST"])
+@app.route("/file",  methods=["POST"])
 def index():
     def success(req):
         req_json = req.json
@@ -69,6 +70,24 @@ def search():
 
     return
 
+@app.route('/list', methods=['POST'])
+@app.route('/export', methods=['POST'])
+def list_():
+    def success(req):
+        try:
+            entries = list_entries()
+            return json.dumps(
+                {
+                    "entries": [entry.as_dict() for entry in entries],
+                }
+            )
+        except Exception as e:
+            return str(e), 500
+        return
+
+    if request.method == "POST":
+        return handle_request(request, success)
+
 
 @app.route("/inspect", methods=["POST"])
 def inspect():
@@ -79,7 +98,7 @@ def inspect():
             entry = find_entry(id_)
             if entry is None:
                 return "bad parameters", 400
-            return json.dumps({"entry": entry.as_dict()})
+            return json.dumps({"entry": entry.as_dict()}, default=str)
         except Exception as e:
             return str(e), 500
 
