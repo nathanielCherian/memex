@@ -7,7 +7,7 @@ from memex.config import ConfigOption, ConfigSection, MemexConfig
 from memex.search import PowerSearch
 
 from .auth import validate_token
-from .entry import create_entry, find_entry, list_entries, save_entry
+from .entry_manager import EntryManager
 from .utils import parse_token
 
 app = Flask(__name__)
@@ -25,13 +25,16 @@ def handle_request(req, on_success, on_failure=lambda: ("Unauthorized", 401)):
 @app.route("/", methods=["POST"])
 @app.route("/file", methods=["POST"])
 def index():
+    entry_manager = EntryManager()
+    entry_manager.create_session()
+
     def success(req):
         req_json = req.json
         print("token authenticated")
-        entry = create_entry(req_json)
+        entry = entry_manager.create_entry(req_json)
         if not entry:
             return "Bad parameters", 400
-        status = save_entry(entry)
+        status = entry_manager.save_entry(entry)
         if not status:
             return "Unable to save entry", 500
         return entry.as_dict()
@@ -74,9 +77,12 @@ def search():
 @app.route("/list", methods=["POST"])
 @app.route("/export", methods=["POST"])
 def list_():
+    entry_manager = EntryManager()
+    entry_manager.create_session()
+
     def success(req):
         try:
-            entries = list_entries()
+            entries = entry_manager.list_entries()
             return json.dumps(
                 {
                     "entries": [entry.as_dict() for entry in entries],
@@ -92,11 +98,14 @@ def list_():
 
 @app.route("/inspect", methods=["POST"])
 def inspect():
+    entry_manager = EntryManager()
+    entry_manager.create_session()
+
     def success(req):
         try:
             req_json = req.json
             id_ = req_json["id"]
-            entry = find_entry(id_)
+            entry = entry_manager.find_entry(id_)
             if entry is None:
                 return "bad parameters", 400
             return json.dumps({"entry": entry.as_dict()}, default=str)

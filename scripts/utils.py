@@ -1,7 +1,7 @@
 import os
 import random
 
-from memex.entry import create_entry
+from memex.entry_manager import create_entry
 from memex.main import create_session
 
 dirname = os.path.dirname(__file__)

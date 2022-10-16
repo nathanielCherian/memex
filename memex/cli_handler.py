@@ -9,8 +9,7 @@ from . import __version__
 from .api import start_server
 from .auth import delete_token, gen_token, get_all_tokens
 from .config import ConfigOption, ConfigSection, MemexConfig
-from .entry import (EntryManager, create_entry, find_entry, list_entries,
-                    save_entry)
+from .entry_manager import EntryManager
 from .search import PowerSearch
 
 
@@ -107,8 +106,10 @@ class FileCommand(MemexCommand):
     @remote
     def handle_command(self, parsed_args):
         args = self.get_args(parsed_args)
-        entry = create_entry({"url": args["url"], "keywords": args["keywords"]})
-        status = save_entry(entry)
+        entry = self.entry_manager.create_entry(
+            {"url": args["url"], "keywords": args["keywords"]}
+        )
+        status = self.entry_manager.save_entry(entry)
         self.display
 
 
