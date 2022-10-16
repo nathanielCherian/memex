@@ -61,7 +61,7 @@ Plugins...
 
 ## Testing
 
-```$ poetry tox ```
+```$ poetry run tox ```
 
 ## Philosophy
 - Lightweight

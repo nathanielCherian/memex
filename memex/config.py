@@ -11,6 +11,7 @@ class ConfigSection(Enum):
 class ConfigOption(Enum):
     API_PORT = "API_PORT"
     DB_PATH = "DB_PATH"
+    TEST_DB_PATH = "TEST_DB_PATH"
     LOG_FILE = "LOG_FILE"
     REMOTE = "REMOTE"
     TOKEN = "TOKEN"
@@ -41,8 +42,8 @@ class MemexConfig:
             self.parser.write(conf_file)
             return
 
-    def get(self, sec, opt):
-        return self.parser.get(sec.value, opt.value)
+    def get(self, sec, opt, fallback=None):
+        return self.parser.get(sec.value, opt.value, fallback=fallback)
 
     def set(self, sec, opt, val):
         self.parser.set(sec.value, opt.value, val)
@@ -53,32 +54,3 @@ if __name__ == "__main__":
     mc = MemexConfig()
     mc.get(ConfigSection.DEFAULT, ConfigOption.DB_PATH)
     print(mc)
-
-
-# CONFIG_PATH = expanduser("~") + "/.memexrc"
-
-# config = configparser.ConfigParser()
-# config["DEFAULT"] = {
-#     "API_PORT": 3000,
-#     "DB_PATH": "/tmp/memex.db",  # in produciton not gonna store in tmp
-#     "LOG_FILE": "/tmp/memex.log",
-# }
-
-# # Reserved for plugins
-# config["plugins"] = {}
-
-
-# def safe_create():
-#     if not isfile(CONFIG_PATH):
-#         with open(CONFIG_PATH, "w") as conf_file:
-#             config.write(conf_file)
-
-
-# def edit_config(sec, var, val):
-#     config.set(sec, var, val)
-
-# def read_config():
-#     safe_create()
-#     r_config = configparser.ConfigParser()
-#     r_config.read(CONFIG_PATH)
-#     return r_config

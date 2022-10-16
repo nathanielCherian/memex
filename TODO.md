@@ -1,3 +1,8 @@
+# TODO as of 10/15/22
+- more powerful searching
+- test mode 
+
+Older stuff
 - verbose error messages
 - backups for database
 - ~~logging~~
