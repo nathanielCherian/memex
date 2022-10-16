@@ -9,7 +9,8 @@ from . import __version__
 from .api import start_server
 from .auth import delete_token, gen_token, get_all_tokens
 from .config import ConfigOption, ConfigSection, MemexConfig
-from .entry import create_entry, find_entry, list_entries, save_entry
+from .entry import (EntryManager, create_entry, find_entry, list_entries,
+                    save_entry)
 from .search import PowerSearch
 
 
@@ -44,7 +45,9 @@ class BaseCommand:
 
 
 class MemexCommand(BaseCommand):
-    pass
+    def __init__(self, subparsers) -> None:
+        super().__init__(subparsers)
+        self.entry_manager = EntryManager()
 
 
 class MemexAPICommand(BaseCommand):
