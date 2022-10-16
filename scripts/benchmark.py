@@ -1,27 +1,8 @@
-import os
-import random
 import time
 
-from memex.entry import create_entry
-from memex.main import create_session
 from memex.search import (search_keywords, search_keywords_and,
                           search_keywords_or, search_url)
-
-dirname = os.path.dirname(__file__)
-nouns_file = os.path.join(dirname, "data/nouns.txt")
-test_db = os.path.join(dirname, "example.db")
-
-
-def populate_entries(n):
-    nouns = open(nouns_file, "r").read().split("\n")[:100]
-    website = lambda: f"https://{random.choice(nouns)}.com/"
-    session = create_session()
-    entries = [
-        create_entry({"url": website(), "keywords": random.choices(nouns, k=3)})
-        for _ in range(n)
-    ]
-    session.bulk_save_objects(entries)
-    session.commit()
+from scripts.utils import populate_entries
 
 
 def timeit(func, desc):
