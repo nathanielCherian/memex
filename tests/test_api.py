@@ -1,23 +1,11 @@
-import json
-
 import pytest
-from requests.exceptions import ConnectionError
 
-from memex.api import app
 from memex.auth import gen_token
 
-headers = {"content-type": "application/json"}
-
-client = app.test_client()
+from .utils import post_request
 
 
-def post_request(path, token, payload={}):
-    headers["memex-token"] = token
-    res_text = client.post(path, json=payload, headers=headers)
-    print(res_text)
-    return json.loads(res_text.data)
-
-
+# Generates a token to be used in the rest of tests
 @pytest.fixture
 def token():
     token = gen_token("foo")

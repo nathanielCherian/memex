@@ -2,6 +2,9 @@ import os
 
 from memex.config import ConfigOption, ConfigSection, MemexConfig
 
+# Pytest configuration for further testing
+# wipes the database before continuing
+
 
 def pytest_configure():
     mc = MemexConfig()
