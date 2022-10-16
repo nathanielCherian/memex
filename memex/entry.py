@@ -33,12 +33,14 @@ class EntryManager(BaseSession):
 
     def list_entries(self):
         try:
+            self.create_session()
             return self.session.query(EntryModel).all()
         except Exception as e:
             handle_error("Unable to fetch entries.", e)
 
     def find_entry(self, id_):
         try:
+            # self.create_session()
             return self.session.query(EntryModel).filter(EntryModel.id == id_).first()
         except Exception as e:
             handle_error("Unable to find entry.", e)

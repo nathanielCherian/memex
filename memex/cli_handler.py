@@ -131,7 +131,7 @@ class ListCommand(MemexCommand):
 
     @remote
     def handle_command(self, parsed_args):
-        entries = list_entries()
+        entries = self.entry_manager.list_entries()
         self.display({"entries": [entry.as_dict() for entry in entries]})
         return
 
@@ -222,7 +222,7 @@ class InspectCommand(MemexCommand):
     @remote
     def handle_command(self, parsed_args):
         id_ = self.get_args(parsed_args)["id"]
-        entry = find_entry(id_)
+        entry = self.entry_manager.find_entry(id_)
         self.display({"entry": entry.as_dict()})
 
 
@@ -238,7 +238,7 @@ class ExportCommand(MemexCommand):
 
     @remote
     def handle_command(self, parsed_args):
-        entries = list_entries()
+        entries = self.entry_manager.list_entries()
         self.display({"entries": [entry.as_dict() for entry in entries]})
 
 

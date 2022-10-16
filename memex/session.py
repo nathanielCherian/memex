@@ -29,4 +29,4 @@ class BaseSession:
         engine = create_engine("sqlite:///" + self.dbpath, echo=False, future=True)
         Base.metadata.create_all(engine)
         self.session = Session(engine)
-        self.session.expire_on_commit = False  # HOPEFULLY THIS IS NOT A PROBLEM
+        # self.session.expire_on_commit = False  # HOPEFULLY THIS IS NOT A PROBLEM
