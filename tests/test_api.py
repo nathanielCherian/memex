@@ -1,6 +1,6 @@
 import pytest
 
-from memex.auth_manager import gen_token
+from memex.auth_manager import AuthManager
 
 from .utils import post_request
 
@@ -8,7 +8,7 @@ from .utils import post_request
 # Generates a token to be used in the rest of tests
 @pytest.fixture
 def token():
-    token = gen_token("foo")
+    token = AuthManager().gen_token("foo")
     return token
 
 

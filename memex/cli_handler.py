@@ -7,7 +7,7 @@ from memex.remote import MemexRemote
 
 from . import __version__
 from .api import start_server
-from .auth_manager import AuthManager, delete_token, gen_token, get_all_tokens
+from .auth_manager import AuthManager
 from .config import ConfigOption, ConfigSection, MemexConfig
 from .entry_manager import EntryManager
 from .search import PowerSearch
