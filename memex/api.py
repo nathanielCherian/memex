@@ -12,6 +12,7 @@ from .utils import parse_token
 
 app = Flask(__name__)
 
+mc = MemexConfig()
 auth_manager = AuthManager()
 entry_manager = EntryManager()
 
@@ -28,8 +29,6 @@ def handle_request(req, on_success, on_failure=lambda: ("Unauthorized", 401)):
 @app.route("/", methods=["POST"])
 @app.route("/file", methods=["POST"])
 def index():
-    entry_manager.create_session()
-
     def success(req):
         req_json = req.json
         print("token authenticated")
@@ -79,9 +78,6 @@ def search():
 @app.route("/list", methods=["POST"])
 @app.route("/export", methods=["POST"])
 def list_():
-    entry_manager = EntryManager()
-    entry_manager.create_session()
-
     def success(req):
         try:
             entries = entry_manager.list_entries()
@@ -100,9 +96,6 @@ def list_():
 
 @app.route("/inspect", methods=["POST"])
 def inspect():
-    entry_manager = EntryManager()
-    entry_manager.create_session()
-
     def success(req):
         try:
             req_json = req.json
@@ -133,7 +126,6 @@ def test():
 
 
 def start_server():
-    mc = MemexConfig()
     port = mc.get(ConfigSection.DEFAULT, ConfigOption.API_PORT)
     app.run(debug=True, port=port)
 
