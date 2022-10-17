@@ -1,6 +1,6 @@
 import pytest
 
-from memex.auth import gen_token
+from memex.auth_manager import gen_token
 
 from .utils import post_request
 

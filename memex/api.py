@@ -6,16 +6,19 @@ from flask import Flask, request
 from memex.config import ConfigOption, ConfigSection, MemexConfig
 from memex.search import PowerSearch
 
-from .auth import validate_token
+from .auth_manager import AuthManager
 from .entry_manager import EntryManager
 from .utils import parse_token
 
 app = Flask(__name__)
 
+auth_manager = AuthManager()
+entry_manager = EntryManager()
+
 
 def handle_request(req, on_success, on_failure=lambda: ("Unauthorized", 401)):
     token = parse_token(request)
-    status = validate_token(token, bearer=request.remote_addr)
+    status = auth_manager.validate_token(token, bearer=request.remote_addr)
     if status:
         return on_success(req)
     else:
@@ -25,7 +28,6 @@ def handle_request(req, on_success, on_failure=lambda: ("Unauthorized", 401)):
 @app.route("/", methods=["POST"])
 @app.route("/file", methods=["POST"])
 def index():
-    entry_manager = EntryManager()
     entry_manager.create_session()
 
     def success(req):

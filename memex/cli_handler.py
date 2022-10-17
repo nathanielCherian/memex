@@ -7,7 +7,7 @@ from memex.remote import MemexRemote
 
 from . import __version__
 from .api import start_server
-from .auth import delete_token, gen_token, get_all_tokens
+from .auth_manager import AuthManager, delete_token, gen_token, get_all_tokens
 from .config import ConfigOption, ConfigSection, MemexConfig
 from .entry_manager import EntryManager
 from .search import PowerSearch
@@ -50,7 +50,9 @@ class MemexCommand(BaseCommand):
 
 
 class MemexAPICommand(BaseCommand):
-    pass
+    def __init__(self, subparsers) -> None:
+        super().__init__(subparsers)
+        self.auth_manager = AuthManager()
 
 
 def remote(func):
@@ -280,7 +282,7 @@ class CreateTokenCommand(MemexAPICommand):
     def handle_command(self, parsed_args):
         name = parsed_args.name
         name = name if name else input("identifying name for token: ")
-        token = gen_token(name)
+        token = self.auth_manager.gen_token(name)
         if token:
             print(f"Here is your token: {token}")
             print("This will only be shown once.")
@@ -293,7 +295,7 @@ class ListTokenCommand(MemexAPICommand):
     description = "lists all valid tokens"
 
     def handle_command(self, parsed_args):
-        tokens = get_all_tokens()
+        tokens = self.auth_manager.get_all_tokens()
         tokenstrs = list(
             map(
                 lambda token: str(token.id).ljust(3)
@@ -316,7 +318,7 @@ class RevokeTokenCommand(MemexAPICommand):
 
     def handle_command(self, parsed_args):
         id_ = parsed_args.id[0]
-        status = delete_token(id_)
+        status = self.auth_manager.delete_token(id_)
         if status:
             print("Successfully revoked token.")
 
@@ -330,8 +332,6 @@ class StartAPICommand(MemexAPICommand):
 
 
 # Final memex cli class
-
-
 class MemexCLI:
     def __init__(self, cli, args=[]) -> None:
         if not args:
