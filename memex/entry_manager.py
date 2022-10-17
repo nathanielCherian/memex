@@ -9,6 +9,10 @@ from .models import EntryModel
 class EntryManager(BaseManager):
     INPUTS = ["url", "keywords"]
 
+    def query(self):
+        self.create_session()
+        return self.session.query(EntryModel)
+
     def create_entry(self, entry_dict):
         try:
             self.create_session()

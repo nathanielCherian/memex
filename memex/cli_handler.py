@@ -143,37 +143,37 @@ class SearchCommand(MemexCommand):
     command = "search"
     description = "Returns entries that match one or more of the keywords given. Keywords are space-seperated"
 
-    def create_parser(self):
-        self.parser.add_argument("terms", metavar="terms", nargs="*")
-        group = self.parser.add_mutually_exclusive_group(required=False)
-        group.add_argument(
-            "-i",
-            "--intersection",
-            dest="intersection",
-            const="and",
-            nargs="?",
-            help="Find intersection of search terms",
-        )
+    def __init__(self, subparsers):
+        super().__init__(subparsers)
+        self.power_search = PowerSearch()
 
-        group.add_argument(
-            "-u",
-            "--union",
-            dest="intersection",
-            const="or",
-            nargs="?",
-            help="Find union of search terms",
-        )
+    def create_parser(self):
+        self.parser.add_argument("query", metavar="query")
+        # self.parser.add_argument("terms", metavar="terms", nargs="*")
+        # group = self.parser.add_mutually_exclusive_group(required=False)
+        # group.add_argument(
+        #     "-i",
+        #     "--intersection",
+        #     dest="intersection",
+        #     const="and",
+        #     nargs="?",
+        #     help="Find intersection of search terms",
+        # )
+
+        # group.add_argument(
+        #     "-u",
+        #     "--union",
+        #     dest="intersection",
+        #     const="or",
+        #     nargs="?",
+        #     help="Find union of search terms",
+        # )
         return
 
     def get_args(self, parsed_args):
-        terms = parsed_args.terms
-        if len(terms) < 1:
-            print("No search queries provided.")
-            exit()
+        query = parsed_args.query
         return {
-            "terms": terms,
-            "operation": parsed_args.intersection,
-            "fields": ["keywords"],
+            "query": query,
         }
 
     def display(self, model):
@@ -192,12 +192,8 @@ class SearchCommand(MemexCommand):
     @remote
     def handle_command(self, parsed_args):
         args = self.get_args(parsed_args)
-        terms = args["terms"]
-        operation = args["operation"]
-        fields = args["fields"]
-
-        entries = PowerSearch(terms, operation, fields).execute()
-
+        query = args["query"]
+        entries = self.power_search.FTSearch(query) 
         self.display({"entries": [entry.as_dict() for entry in entries]})
         return
 
