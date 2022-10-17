@@ -1,8 +1,9 @@
 import logging
 
 
-def handle_error(message, e):
-    print(message, e)
+def handle_error(message, e, verbose=True):
+    if verbose:
+        print(message, e)
     logging.error(message, e)
 
 

@@ -1,10 +1,11 @@
 # TODO as of 10/15/22
-- Make session/entry object based
+- ~~Make session/entry object based~~
 - more powerful searching
 - ~~test mode~~ 
 - limited number of entries shown from list
     - Maybe show from most recent to oldest
     - Variable config file
+- add logging to api 
 
 
 Older stuff

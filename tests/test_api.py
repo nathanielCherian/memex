@@ -32,7 +32,7 @@ def test_inspect(token):
     assert type(res["entry"]) == dict
 
 
-def test_search(token):
-    obj = {"operation": "or", "terms": ["test"], "fields": ["keywords"]}
-    res = post_request("/search", token, payload=obj)
-    assert type(res["entries"]) == list
+# def test_search(token):
+#     obj = {"operation": "or", "terms": ["test"], "fields": ["keywords"]}
+#     res = post_request("/search", token, payload=obj)
+#     assert type(res["entries"]) == list

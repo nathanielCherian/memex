@@ -3,12 +3,11 @@ import logging
 import uuid
 
 from .errors import handle_error
-from .main import create_session
 from .models import AuthModel
-from .session import BaseSession
+from .session import BaseManager
 
 
-class AuthManager(BaseSession):
+class AuthManager(BaseManager):
     def gen_token(self, name):
         token = str(uuid.uuid4())
         salt = hashlib.sha256(str.encode(token)).hexdigest()

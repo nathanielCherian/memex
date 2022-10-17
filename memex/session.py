@@ -9,7 +9,7 @@ from memex.config import ConfigOption, ConfigSection, MemexConfig
 from .models import Base
 
 
-class BaseSession:
+class BaseManager:
     def __init__(self):
         self.mc = MemexConfig()
         self.dbpath = self.mc.get(ConfigSection.DEFAULT, ConfigOption.DB_PATH)

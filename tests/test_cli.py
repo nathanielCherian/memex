@@ -9,8 +9,8 @@ def test_cli__file():
     MemexCLI(CLI.MEMEX, ["file", "url", "keyword1", "keyword2", "keyword3"])
 
 
-def test_cli__search():
-    MemexCLI(CLI.MEMEX, ["search", "search_term1", "search_term2"])
+# def test_cli__search():
+#    MemexCLI(CLI.MEMEX, ["search", "search_term1", "search_term2"])
 
 
 def test_server__create():

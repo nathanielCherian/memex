@@ -1,12 +1,12 @@
 import logging
 
-from memex.session import BaseSession
+from memex.session import BaseManager
 
 from .errors import InvalidKeywordException, handle_error
 from .models import EntryModel
 
 
-class EntryManager(BaseSession):
+class EntryManager(BaseManager):
     INPUTS = ["url", "keywords"]
 
     def create_entry(self, entry_dict):

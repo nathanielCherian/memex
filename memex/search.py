@@ -1,6 +1,5 @@
 from sqlalchemy import and_, or_
 
-from memex.main import create_session
 from memex.models import EntryModel
 
 
@@ -17,7 +16,7 @@ class PowerSearch:
 
     def execute(self):
         op_func = or_ if self.operation == "or" else and_
-        session = create_session()
+        # session = create_session()
         entries = []
         for field in self.fields:
             ModelAttrib = None
