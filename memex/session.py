@@ -30,3 +30,6 @@ class BaseManager:
         Base.metadata.create_all(engine)
         self.session = Session(engine)
         # self.session.expire_on_commit = False  # HOPEFULLY THIS IS NOT A PROBLEM
+
+    def execute_sql(self, sql):
+        return

@@ -1,8 +1,11 @@
+import re
+
 from datetime import datetime
 
 from sqlalchemy import and_, or_
 
 from memex.entry_manager import EntryManager
+from memex.errors import BasicException, InvalidQueryException
 from memex.models import EntryModel
 
 # My vision for PowerSearch
@@ -18,6 +21,35 @@ FIELDS = {
 }
 
 
+class Node:
+    def __init__(self, exp):
+        self.exp = exp
+        self.children = []
+
+    def add_child(self, child):
+        self.children.add(child)
+
+    def get_parts(self):
+        state = 0
+        for i, char in enumerate(self.exp):
+            if char == "(":
+                state += 1
+            elif char == ')':
+                state -= 1
+
+            if (state == 0) and (re.match("\|\||&&", self.exp[i+1:i+3])):
+                p1 = self.exp[0:i+1]
+                p2 = self.exp[i+1:i+3]
+                p3 = self.exp[i+3:]
+                return (p1,p2,p3)
+        raise BasicException("Unable to find operator")
+
+if __name__ == "__main__":
+    exp = '(keywords="asdas"||(id=0&&id=1))&&keywords="asd"'
+    o = p.get_parts()
+    print(o)
+
+
 class PowerSearch:
     def __init__(self):
         self.em = EntryManager()
@@ -25,17 +57,21 @@ class PowerSearch:
     def FTSearch(self, term, fields=None):
         if not fields:
             entryAttribs = [FIELDS[f][1] for f in FIELDS.keys() if FIELDS[f][0] == str]
-        entries = (
-            self.em.query()
-            .filter(or_(*[MA.contains(term) for MA in entryAttribs]))
-            .all()
-        )
+        entries = self.em.query().filter(FIELDS['keywords'][1].op('regexp')(term)).all()
+        # entries = (
+        #     self.em.query()
+        #     .filter(or_(*[MA.contains(term) for MA in entryAttribs]))
+        #     .all()
+        # )
         return entries
 
+    def faceted_search(self, query):
+        operations = []
+        to_visit = [query]
 
-if __name__ == "__main__":
-    entries = PowerSearch().FTSearch("story")
-    print(entries)
+# if __name__ == "__main__":
+#     entries = PowerSearch().FTSearch("story")
+#     print(entries)
 
 # class PowerSearch:
 #     # Extend PowerSearch in the future, it will be the selling point of memex

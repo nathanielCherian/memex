@@ -178,7 +178,7 @@ class SearchCommand(MemexCommand):
 
     def display(self, model):
         entries = model["entries"]
-        print(f"found {len(entries)} entries")
+        print(f"found {len(entries)} entries matching '{model['query']}'")
         r = (
             lambda e: str(e["id"]).ljust(4)
             + e["url"].ljust(19)
@@ -194,7 +194,7 @@ class SearchCommand(MemexCommand):
         args = self.get_args(parsed_args)
         query = args["query"]
         entries = self.power_search.FTSearch(query) 
-        self.display({"entries": [entry.as_dict() for entry in entries]})
+        self.display({"entries": [entry.as_dict() for entry in entries], "query":query})
         return
 
 
