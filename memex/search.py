@@ -25,10 +25,15 @@ class PowerSearch:
         # )
         return entries
 
-    def query_seach(self, query):
+    def query_seach(self, query, rebuild=False):
         compiler = Compiler(query)
         sql_search = compiler.to_sql()
-        self.em.execute_sql(f"SELECT * FROM entries WHERE {sql_search}")
+        rs = self.em.execute_sql(f"SELECT * FROM entries WHERE {sql_search}")
+        columns = FIELDS.keys()
+        entries = [{column:r[i] for i, column in enumerate(columns)} for r in rs]
+        if rebuild:
+            return (entries, compiler.rebuild_query()[1:-1]) #[-1:-1] to cut off extra parenthesis
+        return entries
 
     # def faceted_search(self, query):
 

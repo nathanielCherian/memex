@@ -149,6 +149,13 @@ class SearchCommand(MemexCommand):
 
     def create_parser(self):
         self.parser.add_argument("query", metavar="query")
+        self.parser.add_argument(
+            "-p",
+            "--power",
+            dest="power",
+            action="store_true",
+            help="Power search",
+        )
         # self.parser.add_argument("terms", metavar="terms", nargs="*")
         # group = self.parser.add_mutually_exclusive_group(required=False)
         # group.add_argument(
@@ -172,8 +179,10 @@ class SearchCommand(MemexCommand):
 
     def get_args(self, parsed_args):
         query = parsed_args.query
+        power = parsed_args.power
         return {
             "query": query,
+            "power": power
         }
 
     def display(self, model):
@@ -193,6 +202,11 @@ class SearchCommand(MemexCommand):
     def handle_command(self, parsed_args):
         args = self.get_args(parsed_args)
         query = args["query"]
+        power = args["power"]
+        if (power):
+            # test query: '((keywords=".tory"||id=1)&&url="https://.+")'
+            entries, rebuilt_query = self.power_search.query_seach(query, rebuild=True)
+            return self.display({"entries": entries, "query":rebuilt_query})
         entries = self.power_search.FTSearch(query) 
         self.display({"entries": [entry.as_dict() for entry in entries], "query":query})
         return
