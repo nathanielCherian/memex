@@ -1,3 +1,6 @@
+from ast import keyword
+from enum import Enum
+from lib2to3.pgen2.token import OP
 import re
 
 from datetime import datetime
@@ -20,16 +23,42 @@ FIELDS = {
     "time_updated": [datetime, EntryModel.time_updated],
 }
 
+class Operator(Enum):
+    OR = '||'
+    AND = '&&'
 
+OPERATORS = {
+    "||":Operator.OR,
+    '&&':Operator.AND,
+}
+
+# class BaseExpression:
+#     def __init__(self, exp):
+#         self.exp = exp
+    
 class Node:
+    
+    left = None
+    op = None
+    right = None
+
+    leaf = False # is this a leaf node 
     def __init__(self, exp):
         self.exp = exp
-        self.children = []
+        self.strip()
+        self.visit()
+        
 
-    def add_child(self, child):
-        self.children.add(child)
+    def strip(self): # Will strip parenthesis from beginig and end of expression
+        self.exp = self.exp.strip()
+        for _ in self.exp:
+            if self.exp[0] == '(' and self.exp[-1] == ')':
+                self.exp = self.exp[1:-1]
+                continue
+            break
+        return
 
-    def get_parts(self):
+    def visit(self):
         state = 0
         for i, char in enumerate(self.exp):
             if char == "(":
@@ -41,14 +70,52 @@ class Node:
                 p1 = self.exp[0:i+1]
                 p2 = self.exp[i+1:i+3]
                 p3 = self.exp[i+3:]
-                return (p1,p2,p3)
-        raise BasicException("Unable to find operator")
+                self.left = Node(p1)
+                self.op = OPERATORS.get(p2, None)
+                self.right = Node(p3)
+                return
+        # If reachers here it is an expression node (leaf)
+        # Need a regex here to validate user input
+        self.leaf = True
+        self.column = re.match("keywords|id", self.exp).group()
+        self.value = self.exp[len(self.column)+1:]
+        self.value = FIELDS[self.column][0](self.value) # Casting to right data type
+
+    def rebuild(self):
+        if self.leaf:
+            return self.exp
+        return f'({self.left.rebuild()}{self.op.value}{self.right.rebuild()})'
+
+    def build(self):
+        if self.leaf:
+            return f'({self.column}=={self.value})'
+        if self.op == Operator.OR:
+            return f'({self.left.build()} OR {self.right.build()})'
+        return f'({self.left.build()} AND {self.right.build()})'
+
+    def __str__(self):
+        if self.leaf:
+            return f'<{self.exp}>'        
+        return f'[{self.left} {self.op} {self.right}]'
+        
+
 
 if __name__ == "__main__":
-    exp = '(keywords="asdas"||(id=0&&id=1))&&keywords="asd"'
-    o = p.get_parts()
-    print(o)
-
+    # exp = '(keywords="asdas"||(id=0&&id=1))&&keywords="asd"'
+    # n = Node(exp)
+    # print(n.rebuild())
+    # em = EntryManager()
+    # e = em.query().filter(or_(EntryModel.keywords == "article,series", and_(EntryModel.keywords == "hi", EntryModel.url == "yo"))).all()
+    # print(e)
+    exp = 'keywords="article,series"||id=1'
+    n = Node(exp)
+    print(n.rebuild())
+    em = EntryManager()
+    q = n.build()
+    print(q)
+    rs = em.execute_sql(f"SELECT * FROM entries WHERE {q}")
+    for row in rs:
+        print(row)
 
 class PowerSearch:
     def __init__(self):
@@ -65,9 +132,8 @@ class PowerSearch:
         # )
         return entries
 
-    def faceted_search(self, query):
-        operations = []
-        to_visit = [query]
+    # def faceted_search(self, query):
+
 
 # if __name__ == "__main__":
 #     entries = PowerSearch().FTSearch("story")

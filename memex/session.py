@@ -1,8 +1,10 @@
+from cgitb import text
 import logging
 from re import I
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 
 from memex.config import ConfigOption, ConfigSection, MemexConfig
 
@@ -15,7 +17,6 @@ class BaseManager:
         self.dbpath = self.mc.get(ConfigSection.DEFAULT, ConfigOption.DB_PATH)
         self.logfile = self.mc.get(ConfigSection.DEFAULT, ConfigOption.LOG_FILE)
         self.set_logging()
-        self.set_logging()
 
     def set_logging(self):
         logging.basicConfig(
@@ -26,10 +27,14 @@ class BaseManager:
         )
 
     def create_session(self):
-        engine = create_engine("sqlite:///" + self.dbpath, echo=False, future=True)
-        Base.metadata.create_all(engine)
-        self.session = Session(engine)
+        self.engine = create_engine("sqlite:///" + self.dbpath, echo=True, future=True)
+        Base.metadata.create_all(self.engine)
+        self.session = Session(self.engine)
         # self.session.expire_on_commit = False  # HOPEFULLY THIS IS NOT A PROBLEM
 
     def execute_sql(self, sql):
-        return
+        self.engine = create_engine("sqlite:///" + self.dbpath, echo=True, future=True)
+        with self.engine.connect() as con:
+            rs = con.execute(text(sql))
+            return list(rs)
+        return None
