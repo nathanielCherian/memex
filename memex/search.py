@@ -77,9 +77,14 @@ class Node:
         # If reachers here it is an expression node (leaf)
         # Need a regex here to validate user input
         self.leaf = True
-        self.column = re.match("keywords|id", self.exp).group()
-        self.value = self.exp[len(self.column)+1:]
-        self.value = FIELDS[self.column][0](self.value) # Casting to right data type
+        match = re.match("keywords|url|id", self.exp)
+        if not match: raise InvalidQueryException("Invalid query string: column name not recognized")
+        self.column = match.group()
+        self.value =  self.exp[len(self.column):]
+        if self.value[0] != "=": raise InvalidQueryException("Invalid query string.")
+        self.value = self.value[1:]
+        self.type = FIELDS[self.column][0]
+        self.value = self.type(self.value) # Casting to right data type
 
     def rebuild(self):
         if self.leaf:
@@ -88,7 +93,11 @@ class Node:
 
     def build(self):
         if self.leaf:
-            return f'({self.column}=={self.value})'
+            if self.type == str:
+                comp = "regexp"
+            else:
+                comp = "="
+            return f'({self.column} {comp} {self.value})'
         if self.op == Operator.OR:
             return f'({self.left.build()} OR {self.right.build()})'
         return f'({self.left.build()} AND {self.right.build()})'
@@ -107,7 +116,7 @@ if __name__ == "__main__":
     # em = EntryManager()
     # e = em.query().filter(or_(EntryModel.keywords == "article,series", and_(EntryModel.keywords == "hi", EntryModel.url == "yo"))).all()
     # print(e)
-    exp = 'keywords="article,series"||id=1'
+    exp = '((keywords=".tory"||id=1)&&url="https://.+")'
     n = Node(exp)
     print(n.rebuild())
     em = EntryManager()
