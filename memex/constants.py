@@ -1,6 +1,7 @@
-from enum import Enum
-from memex.models import EntryModel
 from datetime import datetime
+from enum import Enum
+
+from memex.models import EntryModel
 
 FIELDS = {
     "id": [int, EntryModel.id],
@@ -10,11 +11,13 @@ FIELDS = {
     "time_updated": [datetime, EntryModel.time_updated],
 }
 
+
 class Operator(Enum):
-    OR = '||'
-    AND = '&&'
+    OR = "||"
+    AND = "&&"
+
 
 OPERATORS = {
-    "||":Operator.OR,
-    '&&':Operator.AND,
+    "||": Operator.OR,
+    "&&": Operator.AND,
 }

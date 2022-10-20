@@ -9,6 +9,7 @@ Quickly find that one gif or blog you saw a month ago through a powerful databas
 The term 'memex' (memory-extension) comes form [Vannevar Bush](https://en.wikipedia.org/wiki/Memex)'s fictional device that would be a *digital searchable record* of our lives.
 
 
+
 NOTE: This project is pre-alpha, use at your own risk.
 
 ## Installation
@@ -25,6 +26,9 @@ This will activate the poetry virtual enviornment
 ## Configuration
 On running memex for the first time, a configuration file will be created at ```~/.memex```.
 
+## PowerSearch
+```$ memex search -p "url='*twitter*'&(keywords="buisness")
+
 ## Usage
 ```$ memex file [url?] [keywords?]```
 Stores a new entry to the database. keywords are space-seperated.
@@ -32,8 +36,8 @@ Stores a new entry to the database. keywords are space-seperated.
 ```$ memex list```
 Shows all entrys in the database
 
-```$ memex search [keywords]```
-Returns entries that match one or more of the keywords given. Keywords are space-seperated
+```$ memex search term [-p,--power]```
+Returns entries that match the term regex. Use PowerSearch to refine a search.
 
 ```$ memex inspect [id]```
 Displays full entry of given id.

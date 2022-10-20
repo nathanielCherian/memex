@@ -1,10 +1,9 @@
-from cgitb import text
 import logging
+from cgitb import text
 from re import I
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session
-from sqlalchemy import text
 
 from memex.config import ConfigOption, ConfigSection, MemexConfig
 

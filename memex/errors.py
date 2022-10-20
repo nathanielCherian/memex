@@ -10,9 +10,11 @@ def handle_error(message, e, verbose=True):
 class InvalidKeywordException(Exception):
     pass
 
+
 class InvalidQueryException(Exception):
     def __init__(self, message):
         super().__init__(message)
+
 
 class BasicException(Exception):
     def __init__(self, message):

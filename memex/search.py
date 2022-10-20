@@ -1,13 +1,12 @@
 from abc import abstractmethod
 
-from memex.entry_manager import EntryManager
-from memex.constants import FIELDS
 from memex.compiler import Compiler
+from memex.constants import FIELDS
+from memex.entry_manager import EntryManager
 
 # My vision for PowerSearch
 # - Full text search
 # - provide a list of columns to run full text search one
-
 
 
 class PowerSearch:
@@ -17,7 +16,7 @@ class PowerSearch:
     def FTSearch(self, term, fields=None):
         if not fields:
             entryAttribs = [FIELDS[f][1] for f in FIELDS.keys() if FIELDS[f][0] == str]
-        entries = self.em.query().filter(FIELDS['keywords'][1].op('regexp')(term)).all()
+        entries = self.em.query().filter(FIELDS["keywords"][1].op("regexp")(term)).all()
         # entries = (
         #     self.em.query()
         #     .filter(or_(*[MA.contains(term) for MA in entryAttribs]))
@@ -30,9 +29,12 @@ class PowerSearch:
         sql_search = compiler.to_sql()
         rs = self.em.execute_sql(f"SELECT * FROM entries WHERE {sql_search}")
         columns = FIELDS.keys()
-        entries = [{column:r[i] for i, column in enumerate(columns)} for r in rs]
+        entries = [{column: r[i] for i, column in enumerate(columns)} for r in rs]
         if rebuild:
-            return (entries, compiler.rebuild_query()[1:-1]) #[-1:-1] to cut off extra parenthesis
+            return (
+                entries,
+                compiler.rebuild_query()[1:-1],
+            )  # [-1:-1] to cut off extra parenthesis
         return entries
 
     # def faceted_search(self, query):
