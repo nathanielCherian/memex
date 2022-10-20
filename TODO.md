@@ -10,7 +10,7 @@
 - Improve power search functionality!
     - comparisons for numbers
     - Standardize constants/enums
-    
+- display entry in tuple form clihandler
 
 
 Older stuff
