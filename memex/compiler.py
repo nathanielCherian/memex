@@ -41,12 +41,12 @@ class LeafNode(Node):
             raise InvalidQueryException(
                 "Invalid query string: column name not recognized"
             )
-        self.column = match.group()
-        self.value = self.exp[len(self.column) :]
-        if self.value[0] != "=":
-            raise InvalidQueryException("Invalid query string.")
-        self.value = self.value[1:]
+        self.column = match.group() # grabbing column name
         self.type = FIELDS[self.column][0]
+        self.value = self.exp[len(self.column):].strip() # getting the rest of the string
+        if self.value[0] != "=": # Force the first character to have a 
+            raise InvalidQueryException("Invalid query string: Must have a comparator")
+        self.value = self.value[1:]
         self.value = self.type(self.value)  # Casting to right data type
 
     def rebuild(self):
@@ -121,9 +121,17 @@ class Compiler:
 
 
 if __name__ == "__main__":
+
+    def tester(exp):
+        compiler = Compiler(exp)
+        sql = compiler.to_sql()
+        print(sql)
+
     exp = '((keywords=".tory"||id=1)&&url="https://.+")'
-    compiler = Compiler(exp)
-    sql = compiler.to_sql()
+    tester(exp)
+    # tester('notright="test"')
+    tester("keywords ='yo'")
+
 
     # Code below does what Compiler does
     # n = BranchNode(exp)

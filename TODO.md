@@ -2,6 +2,13 @@
 - ~~Make session/entry object based~~
 ~~- more powerful searching~~
 - ~~test mode~~ 
+- santize SQL data
+- add tests for power search
+- add example to readme for power search
+- debug power search
+    - Throw proper errors
+    - add comparisons
+
 - limited number of entries shown from list
     - Maybe show from most recent to oldest
     - Variable config file

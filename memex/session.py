@@ -26,13 +26,13 @@ class BaseManager:
         )
 
     def create_session(self):
-        self.engine = create_engine("sqlite:///" + self.dbpath, echo=False, future=True)
+        self.engine = create_engine("sqlite:///" + self.dbpath, echo=True, future=True)
         Base.metadata.create_all(self.engine)
         self.session = Session(self.engine)
         # self.session.expire_on_commit = False  # HOPEFULLY THIS IS NOT A PROBLEM
 
     def execute_sql(self, sql):
-        self.engine = create_engine("sqlite:///" + self.dbpath, echo=False, future=True)
+        self.engine = create_engine("sqlite:///" + self.dbpath, echo=True, future=True)
         with self.engine.connect() as con:
             rs = con.execute(text(sql))
             return list(rs)
