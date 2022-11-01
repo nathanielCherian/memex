@@ -36,28 +36,43 @@ class Node:
 
 class LeafNode(Node):
     def visit(self):
-        match = re.match("keywords|url|id", self.exp)
-        if not match:
+        column_match = re.match("keywords|url|id", self.exp)
+        if not column_match:
             raise InvalidQueryException(
                 "Invalid query string: column name not recognized"
             )
-        self.column = match.group() # grabbing column name
+        self.column = column_match.group() # grabbing column name
         self.type = FIELDS[self.column][0]
-        self.value = self.exp[len(self.column):].strip() # getting the rest of the string
-        if self.value[0] != "=": # Force the first character to have a 
-            raise InvalidQueryException("Invalid query string: Must have a comparator")
-        self.value = self.value[1:]
-        self.value = self.type(self.value)  # Casting to right data type
 
+        self.value = self.exp[len(self.column):].strip() # getting the rest of the string
+
+        # Finding the comparison
+        comp_match = re.match("^(<=?|>=?)|=", self.value)
+        if not comp_match:
+            raise InvalidQueryException(
+                "Invalid query string: invalid comparison"
+            )
+        self.comp = comp_match.group()
+        self.value = self.value[len(self.comp):].strip() # What is left is the right hand side
+
+        if self.type == str: # Making sure the right comparators are used
+            if self.comp != '=':
+                raise InvalidQueryException("Invalid query string: Can only use '=' on string columns")
+            self.comp = "regexp"
+        elif self.type == int:
+            pass
+
+
+        try: # Converting the right hand value into the type of the column
+            self.value = self.type(self.value)  # Casting to right data type
+        except Exception as e:
+            raise InvalidQueryException("Invalid Query: Unable to parse argument, check that column and data types match")
+ 
     def rebuild(self):
         return self.exp
 
     def build(self):
-        if self.type == str:
-            comp = "regexp"
-        else:
-            comp = "="
-        return f"({self.column} {comp} {self.value})"
+        return f"({self.column} {self.comp} {self.value})"
 
     def __str__(self):
         return f"<{self.exp}>"
@@ -128,9 +143,9 @@ if __name__ == "__main__":
         print(sql)
 
     exp = '((keywords=".tory"||id=1)&&url="https://.+")'
-    tester(exp)
+    # tester(exp)
     # tester('notright="test"')
-    tester("keywords ='yo'")
+    tester("id<=1")
 
 
     # Code below does what Compiler does
