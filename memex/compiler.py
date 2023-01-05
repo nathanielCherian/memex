@@ -40,33 +40,38 @@ class LeafNode(Node):
             raise InvalidQueryException(
                 "Invalid query string: column name not recognized"
             )
-        self.column = column_match.group() # grabbing column name
+        self.column = column_match.group()  # grabbing column name
         self.type = FIELDS[self.column][0]
 
-        self.value = self.exp[len(self.column):].strip() # getting the rest of the string
+        self.value = self.exp[
+            len(self.column) :
+        ].strip()  # getting the rest of the string
 
         # Finding the comparison
         comp_match = re.match("^=|<=?|>=?|!=", self.value)
         if not comp_match:
-            raise InvalidQueryException(
-                "Invalid query string: invalid comparison"
-            )
+            raise InvalidQueryException("Invalid query string: invalid comparison")
         self.comp = comp_match.group()
-        self.value = self.value[len(self.comp):].strip() # What remains is the right hand side
+        self.value = self.value[
+            len(self.comp) :
+        ].strip()  # What remains is the right hand side
 
-
-        if self.type == str: # Making sure the right comparators are used
-            if self.comp != '=':
-                raise InvalidQueryException("Invalid query string: Can only use '=' on string columns")
+        if self.type == str:  # Making sure the right comparators are used
+            if self.comp != "=":
+                raise InvalidQueryException(
+                    "Invalid query string: Can only use '=' on string columns"
+                )
             self.comp = "regexp"
         elif self.type == int:
             pass
 
-        try: # Converting the right hand value into the type of the column
+        try:  # Converting the right hand value into the type of the column
             self.value = self.type(self.value)  # Casting to right data type
         except Exception as e:
-            raise InvalidQueryException("Invalid Query: Unable to parse argument, check that column and data types match")
- 
+            raise InvalidQueryException(
+                "Invalid Query: Unable to parse argument, check that column and data types match"
+            )
+
     def rebuild(self):
         return self.exp
 
@@ -100,7 +105,9 @@ class BranchNode(Node):
                 self.left = BranchNode(p1)
                 self.op = OPERATORS.get(p2, None)
                 if self.op is None:
-                    raise InvalidQueryException("Invalid Query: Unkown chaining operator")
+                    raise InvalidQueryException(
+                        "Invalid Query: Unkown chaining operator"
+                    )
                 self.right = BranchNode(p3)
                 return
         # If reachers here it is an expression node (leaf)
@@ -135,22 +142,21 @@ class Compiler:
     def rebuild_query(self):
         return self.head.rebuild()
 
+
 def tester(exp):
     compiler = Compiler(exp)
     sql = compiler.to_sql()
     print(sql)
     print(compiler.rebuild_query())
 
+
 if __name__ == "__main__":
-
-
 
     exp = '((keywords=".tory"||id=1)&&url="https://.+")'
     # tester(exp)
     # tester('notright="test"')
-    tester('id<=5')
+    tester("id<=5")
     tester("keywords='yo'")
-
 
     # Code below does what Compiler does
     # n = BranchNode(exp)
