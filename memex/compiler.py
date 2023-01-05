@@ -2,7 +2,6 @@ import re
 from abc import abstractmethod
 
 from memex.constants import FIELDS, OPERATORS, Operator
-from memex.entry_manager import EntryManager
 from memex.errors import InvalidQueryException
 
 
@@ -47,13 +46,14 @@ class LeafNode(Node):
         self.value = self.exp[len(self.column):].strip() # getting the rest of the string
 
         # Finding the comparison
-        comp_match = re.match("^(<=?|>=?)|=", self.value)
+        comp_match = re.match("^=|<=?|>=?|!=", self.value)
         if not comp_match:
             raise InvalidQueryException(
                 "Invalid query string: invalid comparison"
             )
         self.comp = comp_match.group()
-        self.value = self.value[len(self.comp):].strip() # What is left is the right hand side
+        self.value = self.value[len(self.comp):].strip() # What remains is the right hand side
+
 
         if self.type == str: # Making sure the right comparators are used
             if self.comp != '=':
@@ -61,7 +61,6 @@ class LeafNode(Node):
             self.comp = "regexp"
         elif self.type == int:
             pass
-
 
         try: # Converting the right hand value into the type of the column
             self.value = self.type(self.value)  # Casting to right data type
@@ -100,6 +99,8 @@ class BranchNode(Node):
                 p3 = self.exp[i + 3 :]
                 self.left = BranchNode(p1)
                 self.op = OPERATORS.get(p2, None)
+                if self.op is None:
+                    raise InvalidQueryException("Invalid Query: Unkown chaining operator")
                 self.right = BranchNode(p3)
                 return
         # If reachers here it is an expression node (leaf)
@@ -134,18 +135,21 @@ class Compiler:
     def rebuild_query(self):
         return self.head.rebuild()
 
+def tester(exp):
+    compiler = Compiler(exp)
+    sql = compiler.to_sql()
+    print(sql)
+    print(compiler.rebuild_query())
 
 if __name__ == "__main__":
 
-    def tester(exp):
-        compiler = Compiler(exp)
-        sql = compiler.to_sql()
-        print(sql)
+
 
     exp = '((keywords=".tory"||id=1)&&url="https://.+")'
     # tester(exp)
     # tester('notright="test"')
-    tester("id<=1")
+    tester('id<=5')
+    tester("keywords='yo'")
 
 
     # Code below does what Compiler does
