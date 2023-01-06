@@ -17,11 +17,6 @@ class PowerSearch:
         if not fields:
             entryAttribs = [FIELDS[f][1] for f in FIELDS.keys() if FIELDS[f][0] == str]
         entries = self.em.query().filter(FIELDS["keywords"][1].op("regexp")(term)).all()
-        # entries = (
-        #     self.em.query()
-        #     .filter(or_(*[MA.contains(term) for MA in entryAttribs]))
-        #     .all()
-        # )
         return entries
 
     def query_seach(self, query, rebuild=False):

@@ -1,7 +1,6 @@
 import configparser
 from enum import Enum
 from os.path import expanduser, isfile
-from pathlib import Path
 
 
 class ConfigSection(Enum):
