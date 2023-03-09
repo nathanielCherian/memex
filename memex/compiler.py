@@ -41,7 +41,7 @@ class LeafNode(Node):
                 "Invalid query string: column name not recognized"
             )
         self.column = column_match.group()  # grabbing column name
-        self.type = FIELDS[self.column][0]
+        self.type = FIELDS[self.column]["type"]
 
         self.value = self.exp[
             len(self.column) :

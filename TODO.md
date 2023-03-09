@@ -1,3 +1,13 @@
+# 3/10/22
+- Clean up a little bit
+- Sanitize sql data
+- Add quick search to tests
+- Powersearch without -p
+    - I want this to search all string columns
+- Adding column for date
+- Make date a searchable column
+- Plugins maybe? How would I do this?
+
 # 1/5/22
 - sanitize sql data
 - Powersearch without -p option

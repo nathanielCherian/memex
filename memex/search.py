@@ -14,9 +14,13 @@ class PowerSearch:
         self.em = EntryManager()
 
     def FTSearch(self, term, fields=None):
-        if not fields:
-            entryAttribs = [FIELDS[f][1] for f in FIELDS.keys() if FIELDS[f][0] == str]
-        entries = self.em.query().filter(FIELDS["keywords"][1].op("regexp")(term)).all()
+        # if not fields:
+        #     entryAttribs = [FIELDS[f][1] for f in FIELDS.keys() if FIELDS[f][0] == str]
+        entries = (
+            self.em.query()
+            .filter(FIELDS["keywords"]["column"].op("regexp")(term))
+            .all()
+        )
         return entries
 
     def query_seach(self, query, rebuild=False):

@@ -141,7 +141,7 @@ class ListCommand(MemexCommand):
 
 class SearchCommand(MemexCommand):
     command = "search"
-    description = "Returns entries that match one or more of the keywords given. Keywords are space-seperated"
+    description = "Returns entries that match one or more of the keywords given."
 
     def __init__(self, subparsers):
         super().__init__(subparsers)
