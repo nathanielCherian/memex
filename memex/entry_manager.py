@@ -30,10 +30,10 @@ class EntryManager(BaseManager):
             self.session.commit()
             self.session.refresh(entry)
             logging.info(f"Saved entry to database [{entry.id}]")
-            return True
+            return entry
         except Exception as e:
             handle_error("Unable to save entry.", e)
-            return False
+            return None
 
     def list_entries(self):
         try:

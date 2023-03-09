@@ -11,7 +11,7 @@ from .auth_manager import AuthManager
 from .config import ConfigOption, ConfigSection, MemexConfig
 from .entry_manager import EntryManager
 from .search import PowerSearch
-
+from .display import display_list, display_entry
 
 class CLI(Enum):
     MEMEX = 1
@@ -103,6 +103,7 @@ class FileCommand(MemexCommand):
         print("Saved entry successfully!") if model else print(
             "Failed to save entry..."
         )
+        print(model)
         return
 
     @remote
@@ -112,7 +113,7 @@ class FileCommand(MemexCommand):
             {"url": args["url"], "keywords": args["keywords"]}
         )
         status = self.entry_manager.save_entry(entry)
-        self.display
+        self.display(status)
 
 
 class ListCommand(MemexCommand):
@@ -122,13 +123,7 @@ class ListCommand(MemexCommand):
     def display(self, model):
         entries = model["entries"]
         print(f"showing {len(entries)} entries")
-        r = (
-            lambda e: str(e["id"]).ljust(4)
-            + e["url"].ljust(19)
-            + " "
-            + str(e["keywords"])
-        )
-        entry_strs = list(map(r, entries))
+        entry_strs = display_list(entries)
         print("\n".join(entry_strs))
         return
 
@@ -185,13 +180,7 @@ class SearchCommand(MemexCommand):
     def display(self, model):
         entries = model["entries"]
         print(f"found {len(entries)} entries matching '{model['query']}'")
-        r = (
-            lambda e: str(e["id"]).ljust(4)
-            + e["url"].ljust(19)
-            + " "
-            + str(e["keywords"])
-        )
-        entry_strs = list(map(r, entries))
+        entry_strs = display_list(entries)
         print("\n".join(entry_strs))
         return
 
@@ -226,9 +215,7 @@ class InspectCommand(MemexCommand):
         if entry is None:
             print("That entry does not exist.")
             return
-        print(
-            f"url: {entry['url']}\ndate-created: {entry['time_created']}\nkeywords: {entry['keywords']}\n"
-        )
+        print(display_entry(entry))
         return
 
     @remote
