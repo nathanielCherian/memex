@@ -38,5 +38,3 @@ class MemexRemote:
 if __name__ == "__main__":
     mr = MemexRemote("http://localhost:3000", "d8e3dec6-47fe-4280-8855-b5ad8c174b7c")
     mr.execute("test-token", {})
-    # x = mr.make_request(mr.url, mr.token)
-    # print(x.status_code, x.content)
